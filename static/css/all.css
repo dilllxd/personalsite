@@ -10,7 +10,7 @@ body {
 }
 h1, h4, p, a, i {
   color: #ffffff;
-  background-color: #000000;
+  background-color: transparent;
   text-decoration: none;
   font-family: monospace;
 }
