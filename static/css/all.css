@@ -228,6 +228,9 @@ readers do not read off random characters that represent icons */
 .fa-acquisitions-incorporated:before {
   content: "\f6af"; }
 
+.fa-x-twitter {
+  content: "\e61b"; }
+
 .fa-ad:before {
   content: "\f641"; }
 
