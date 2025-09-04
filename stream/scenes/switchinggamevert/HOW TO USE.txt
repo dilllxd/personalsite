@@ -1,0 +1,21 @@
+CHANGING BACKGROUND
+Replace any files in the "Background" folder.  .mp4,.ogg,.png,.jpg are all accepted.
+File must be named "bg.png" etc.
+
+CHANING BACKGROUND LOGO
+Replace the file in the "Logo" folder. Only .png accepted. Use a site like 
+https://tinypng.com/ if you need to convert to .png. File must be named "logo.png"
+
+UPDATING SETTINGS
+Click the "Settings generator" file in the main folder to launch the webpage to create 
+and update your own settings!
+
+After you are done changing out settings, you will hit "Download" and then simply replace
+the "settings.js" file in the "Settings" folder.
+
+ADDING INTO OBS
+Add a browser source into OBS at 1920x1080. You want to select a local file 
+and pick the "scene.html" file in the main folder. Scale as needed to fit.
+
+UPDATES COMING SOON
+- Settings import
