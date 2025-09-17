@@ -90,115 +90,125 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (prefersReducedMotion || typeof anime === 'undefined') {
     document
-      .querySelectorAll(
-        '.hero__eyebrow, .hero__title, .hero__lead, .hero__description, .hero__highlights, .hero__actions, .hero__actions a, .panel, .link-list__item, .widget-shell',
-      )
+      .querySelectorAll('[data-animate], .link-card, .widget-shell')
       .forEach((element) => element.classList.add('is-visible'));
     return;
   }
 
-  anime
-    .timeline({ easing: 'easeOutExpo', duration: 750 })
+  const timeline = anime.timeline({ easing: 'easeOutExpo', duration: 700 });
+
+  timeline
     .add({
       targets: '.hero__eyebrow',
-      translateY: [20, 0],
+      translateY: [24, 0],
       opacity: [0, 1],
     })
     .add(
       {
         targets: '.hero__title',
-        translateY: [40, 0],
+        translateY: [36, 0],
+        opacity: [0, 1],
+      },
+      '-=520',
+    )
+    .add(
+      {
+        targets: '.hero__lead',
+        translateY: [32, 0],
+        opacity: [0, 1],
+      },
+      '-=560',
+    )
+    .add(
+      {
+        targets: '.hero__description',
+        translateY: [28, 0],
+        opacity: [0, 1],
+      },
+      '-=560',
+    )
+    .add(
+      {
+        targets: '.hero__stats',
+        translateY: [24, 0],
+        opacity: [0, 1],
+      },
+      '-=560',
+    )
+    .add(
+      {
+        targets: '.hero__stats .stat',
+        translateY: [18, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(90),
+      },
+      '-=500',
+    )
+    .add(
+      {
+        targets: '.hero__actions',
+        translateY: [20, 0],
+        opacity: [0, 1],
+      },
+      '-=540',
+    )
+    .add(
+      {
+        targets: '.hero__actions .button',
+        translateY: [18, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(80),
+      },
+      '-=520',
+    )
+    .add(
+      {
+        targets: '.card--links',
+        translateY: [28, 0],
         opacity: [0, 1],
       },
       '-=500',
     )
     .add(
       {
-        targets: '.hero__lead',
-        translateY: [40, 0],
-        opacity: [0, 1],
-      },
-      '-=600',
-    )
-    .add(
-      {
-        targets: '.hero__description',
-        translateY: [36, 0],
-        opacity: [0, 1],
-      },
-      '-=620',
-    )
-    .add(
-      {
-        targets: '.hero__highlights',
-        translateY: [32, 0],
-        opacity: [0, 1],
-      },
-      '-=600',
-    )
-    .add(
-      {
-        targets: '.hero__highlights li',
-        translateY: [26, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(90),
-      },
-      '-=600',
-    )
-    .add(
-      {
-        targets: '.hero__actions',
-        translateY: [24, 0],
-        opacity: [0, 1],
-      },
-      '-=580',
-    )
-    .add(
-      {
-        targets: '.hero__actions .button',
-        translateY: [24, 0],
+        targets: '.card--links .link-card',
+        translateY: [18, 0],
         opacity: [0, 1],
         delay: anime.stagger(70),
-      },
-      '-=600',
-    )
-    .add(
-      {
-        targets: '.panel',
-        translateY: [28, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(120),
       },
       '-=540',
     )
     .add(
       {
-        targets: '.panel--links .link-list__item',
-        translateY: [20, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(70),
-      },
-      '-=520',
-    )
-    .add(
-      {
-        targets: '.panel--widget .widget-shell',
-        translateY: [20, 0],
+        targets: '.card--widget',
+        translateY: [24, 0],
         opacity: [0, 1],
       },
       '-=480',
+    )
+    .add(
+      {
+        targets: '.card--widget .widget-shell',
+        translateY: [16, 0],
+        opacity: [0, 1],
+      },
+      '-=520',
     );
 
-  anime({
-    targets: '.background-bubble',
-    translateY: [0, -60],
-    translateX: [0, 36],
-    scale: [1, 1.12],
-    opacity: [0.35, 0.55],
-    direction: 'alternate',
-    loop: true,
-    duration: 12000,
-    easing: 'easeInOutSine',
-    delay: anime.stagger(400),
-  });
+  const orbs = document.querySelectorAll('[data-orb]');
+
+  if (orbs.length) {
+    anime({
+      targets: orbs,
+      translateX: () => anime.random(-40, 40),
+      translateY: () => anime.random(-60, 60),
+      scale: () => anime.random(90, 120) / 100,
+      opacity: () => anime.random(35, 60) / 100,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      duration: () => anime.random(8000, 14000),
+      delay: anime.stagger(300),
+      loop: true,
+    });
+  }
 });

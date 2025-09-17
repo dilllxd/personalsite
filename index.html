@@ -47,75 +47,63 @@
     <link href="static/css/site.css" rel="stylesheet" />
   </head>
   <body data-theme="dark">
-    <div class="background-aurora" aria-hidden="true"></div>
-    <div class="background-bubble background-bubble--one" aria-hidden="true"></div>
-    <div class="background-bubble background-bubble--two" aria-hidden="true"></div>
-    <div class="noise" aria-hidden="true"></div>
+    <div class="backdrop" aria-hidden="true">
+      <div class="backdrop__gradient backdrop__gradient--one"></div>
+      <div class="backdrop__gradient backdrop__gradient--two"></div>
+      <div class="backdrop__gradient backdrop__gradient--three"></div>
+      <div class="backdrop__orb backdrop__orb--one" data-orb></div>
+      <div class="backdrop__orb backdrop__orb--two" data-orb></div>
+      <div class="backdrop__orb backdrop__orb--three" data-orb></div>
+      <div class="backdrop__orb backdrop__orb--four" data-orb></div>
+      <div class="backdrop__ring backdrop__ring--one"></div>
+      <div class="backdrop__ring backdrop__ring--two"></div>
+      <div class="backdrop__noise"></div>
+    </div>
 
-    <main class="page">
-      <header class="page__header">
-        <a class="brand" href="#top" aria-label="Home">
-          <img class="brand__mark" src="static/img/favicon.ico" alt="Dylan H logo" width="28" height="28" />
+    <main class="site">
+      <header class="site__header">
+        <a class="site__brand" href="#top" aria-label="Home">
+          <img class="site__brand-mark" src="static/img/favicon.ico" alt="Dylan H logo" width="48" height="48" />
+          <span class="site__brand-text">dylanh.dev</span>
         </a>
-        <div class="page__header-actions">
-          <nav class="page__nav" aria-label="Primary">
-            <a href="#links">Links</a>
-            <a href="#now-playing">Live widget</a>
-            <a href="mailto:dylan@dylanh.dev">Contact</a>
-          </nav>
-          <button
-            type="button"
-            class="theme-toggle"
-            data-theme-toggle
-            aria-label="Toggle color theme"
-            aria-pressed="false"
-          >
-            <span class="theme-toggle__icon" aria-hidden="true">
-              <i class="fa-solid fa-sun" data-theme-toggle-icon></i>
-            </span>
-            <span class="theme-toggle__label" data-theme-toggle-label>Light mode</span>
-          </button>
-        </div>
       </header>
 
       <section class="hero" id="top">
-        <div class="hero__layout">
+        <div class="hero__inner">
           <div class="hero__intro">
-            <p class="hero__eyebrow will-animate">Developer &amp; community builder</p>
-            <h1 class="hero__title will-animate">Hi, I'm Dylan.</h1>
-            <p class="hero__lead will-animate">
-              I just do stuff online. <span data-years-since="2015">10</span> years of shipping tools, building
-              communities, and keeping the vibes high.
+            <p class="hero__eyebrow" data-animate>Developer &amp; community builder</p>
+            <h1 class="hero__title" data-animate>Hi, I'm Dylan.</h1>
+            <p class="hero__lead" data-animate>
+              I just do stuff online. <span data-years-since="2015">10</span> years of shipping tools, building communities,
+              and keeping the vibes high.
             </p>
-            <div class="hero__description will-animate">
-              <p>
-                I'm a self-taught engineer focused on realtime infrastructure, collaborative experiences, and creative
-                online communities. These days I'm experimenting with new status widgets, immersive streams, and ways to
-                keep friends connected across the web.
-              </p>
+            <p class="hero__description" data-animate>
+              I'm a self-taught engineer focused on realtime infrastructure, collaborative experiences, and creative
+              online communities. These days I'm experimenting with new status widgets, immersive streams, and ways to
+              keep friends connected across the web.
+            </p>
+            <div class="hero__stats" data-animate role="list">
+              <div class="stat" role="listitem">
+                <span class="stat__label">Years coding</span>
+                <span class="stat__value"><span data-years-since="2015">10</span>+</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="stat__label">Based in</span>
+                <span class="stat__value">New York</span>
+              </div>
+              <div class="stat" role="listitem">
+                <span class="stat__label">Currently</span>
+                <span class="stat__value">Building status widgets</span>
+              </div>
             </div>
-            <ul class="hero__highlights will-animate" role="list">
-              <li>
-                <span class="hero__highlight-label">Years coding</span>
-                <span class="hero__highlight-value"><span data-years-since="2015">10</span>+</span>
-              </li>
-              <li>
-                <span class="hero__highlight-label">Based in</span>
-                <span class="hero__highlight-value">New York</span>
-              </li>
-              <li>
-                <span class="hero__highlight-label">Currently</span>
-                <span class="hero__highlight-value">Building status widgets</span>
-              </li>
-            </ul>
-            <div class="hero__actions will-animate" role="group" aria-label="Featured links">
+            <div class="hero__actions" data-animate role="group" aria-label="Featured links">
               <a
                 class="button button--primary"
                 href="https://discord.com/users/200654056992145408"
                 target="_blank"
                 rel="noopener"
               >
-                <i class="fa-brands fa-discord" aria-hidden="true"></i>
+                <span class="button__icon" aria-hidden="true"><i class="fa-brands fa-discord"></i></span>
                 <span>Chat on Discord</span>
               </a>
               <a
@@ -124,154 +112,128 @@
                 target="_blank"
                 rel="noopener"
               >
-                <i class="fa-brands fa-github" aria-hidden="true"></i>
+                <span class="button__icon" aria-hidden="true"><i class="fa-brands fa-github"></i></span>
                 <span>GitHub</span>
               </a>
               <a class="button button--ghost" href="mailto:dylan@dylanh.dev">
-                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                <span class="button__icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
                 <span>Email me</span>
               </a>
             </div>
           </div>
-          <div class="hero__aside">
-            <section class="panel panel--links will-animate" id="links" aria-labelledby="links-heading">
-              <div class="panel__header">
-                <h2 class="panel__title" id="links-heading">Find me online</h2>
-                <p class="panel__subtitle">Quick launch points across the web.</p>
+
+          <aside class="hero__aside">
+            <section class="card card--links" id="links" aria-labelledby="links-heading" data-animate>
+              <div class="card__header">
+                <h2 class="card__title" id="links-heading">Find me online</h2>
+                <p class="card__subtitle">Quick launch points across the web.</p>
               </div>
-              <div class="panel__body">
-                <div class="link-list" role="list">
-                  <a
-                    class="link-list__item will-animate"
-                    role="listitem"
-                    href="https://discord.com/users/200654056992145408"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-discord"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">Discord</span>
-                      <span class="link-list__meta">@dilll</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                  <a
-                    class="link-list__item will-animate"
-                    role="listitem"
-                    href="https://github.com/dilllxd"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-github"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">GitHub</span>
-                      <span class="link-list__meta">github.com/dilllxd</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                  <a
-                    class="link-list__item will-animate"
-                    role="listitem"
-                    href="https://keybase.io/dilll"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-key"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">Keybase</span>
-                      <span class="link-list__meta">keybase.io/dilll</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                  <a class="link-list__item will-animate" role="listitem" href="mailto:dylan@dylanh.dev">
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">Email</span>
-                      <span class="link-list__meta">dylan@dylanh.dev</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                  <a
-                    class="link-list__item will-animate"
-                    role="listitem"
-                    href="https://x.com/dilllxd"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-twitter"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">X (Twitter)</span>
-                      <span class="link-list__meta">@dilllxd</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                  <a
-                    class="link-list__item will-animate"
-                    role="listitem"
-                    href="https://www.youtube.com/@dilllxd"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-youtube"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">YouTube</span>
-                      <span class="link-list__meta">youtube.com/@dilllxd</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                  <a class="link-list__item will-animate" role="listitem" href="/">
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-globe"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">dylanh.dev</span>
-                      <span class="link-list__meta">This site</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                  <a
-                    class="link-list__item will-animate"
-                    role="listitem"
-                    href="https://status.dylan.lol"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-signal"></i></span>
-                    <span class="link-list__text">
-                      <span class="link-list__label">Status page</span>
-                      <span class="link-list__meta">status.dylan.lol</span>
-                    </span>
-                    <span class="link-list__arrow" aria-hidden="true">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </span>
-                  </a>
-                </div>
+              <div class="link-grid" role="list">
+                <a
+                  class="link-card"
+                  role="listitem"
+                  href="https://discord.com/users/200654056992145408"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-brands fa-discord"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">Discord</span>
+                    <span class="link-card__meta">@dilll</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
+                <a class="link-card" role="listitem" href="https://github.com/dilllxd" target="_blank" rel="noopener">
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-brands fa-github"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">GitHub</span>
+                    <span class="link-card__meta">github.com/dilllxd</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
+                <a class="link-card" role="listitem" href="https://keybase.io/dilll" target="_blank" rel="noopener">
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-key"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">Keybase</span>
+                    <span class="link-card__meta">keybase.io/dilll</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
+                <a class="link-card" role="listitem" href="mailto:dylan@dylanh.dev">
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">Email</span>
+                    <span class="link-card__meta">dylan@dylanh.dev</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
+                <a class="link-card" role="listitem" href="https://x.com/dilllxd" target="_blank" rel="noopener">
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-brands fa-twitter"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">X (Twitter)</span>
+                    <span class="link-card__meta">@dilllxd</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
+                <a
+                  class="link-card"
+                  role="listitem"
+                  href="https://www.youtube.com/@dilllxd"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-brands fa-youtube"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">YouTube</span>
+                    <span class="link-card__meta">youtube.com/@dilllxd</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
+                <a class="link-card" role="listitem" href="/">
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-globe"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">dylanh.dev</span>
+                    <span class="link-card__meta">This site</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
+                <a class="link-card" role="listitem" href="https://status.dylan.lol" target="_blank" rel="noopener">
+                  <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-signal"></i></span>
+                  <span class="link-card__body">
+                    <span class="link-card__label">Status page</span>
+                    <span class="link-card__meta">status.dylan.lol</span>
+                  </span>
+                  <span class="link-card__arrow" aria-hidden="true">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </span>
+                </a>
               </div>
             </section>
-            <section class="panel panel--widget will-animate" id="now-playing" aria-labelledby="widget-heading">
-              <div class="panel__header">
-                <h2 class="panel__title" id="widget-heading">Live widget ready</h2>
-                <span class="panel__badge">Coming soon</span>
+
+            <section class="card card--widget" id="now-playing" aria-labelledby="widget-heading" data-animate>
+              <div class="card__header">
+                <h2 class="card__title" id="widget-heading">Live widget ready</h2>
+                <span class="card__badge">Coming soon</span>
               </div>
-              <div class="panel__body">
-                <p>
-                  Drop in your API-powered widget and this space will showcase your current song, Discord status, or any
-                  realtime feed you're experimenting with.
-                </p>
-              </div>
-              <div class="widget-shell will-animate" aria-hidden="true">
+              <p class="card__description">
+                Drop in your API-powered widget and this space will showcase your current song, Discord status, or any
+                realtime feed you're experimenting with.
+              </p>
+              <div class="widget-shell" aria-hidden="true">
                 <div class="widget-shell__artwork"></div>
                 <div class="widget-shell__meta">
                   <span class="widget-shell__label">
@@ -285,13 +247,24 @@
                 </div>
               </div>
             </section>
-          </div>
+          </aside>
         </div>
       </section>
 
-      <footer class="page__footer">
-        <span>&copy; <span data-current-year>2025</span> Dylan H.</span>
-        <span>Built with a sprinkle of anime.js animations.</span>
+      <footer class="site__footer">
+        <p class="site__footer-copy">&copy; <span data-current-year>2025</span> Dylan H.</p>
+        <button
+          type="button"
+          class="theme-toggle"
+          data-theme-toggle
+          aria-label="Toggle color theme"
+          aria-pressed="false"
+        >
+          <span class="theme-toggle__icon" aria-hidden="true">
+            <i class="fa-solid fa-sun" data-theme-toggle-icon></i>
+          </span>
+          <span class="theme-toggle__label" data-theme-toggle-label>Light mode</span>
+        </button>
       </footer>
     </main>
 
