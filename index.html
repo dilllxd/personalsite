@@ -1,68 +1,226 @@
-<!DOCTYPE HTML>
-<head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <meta name="description" content="Welcome to my website!" />
+    <meta name="title" content="Hi, I'm Dylan!" />
+    <meta name="author" content="Dylan H" />
+    <link rel="author" href="https://twitter.com/dilllxd" />
+    <link rel="publisher" href="https://twitter.com/dilllxd" />
+    <link rel="icon" href="https://dylanh.dev/static/img/favicon.ico" />
 
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0">
-        <meta name="description" content="Welcome to my website!">
-        <meta name="title" content="Hi, I'm Dylan!">
-        <meta name="author" content="Dylan H">
-        <link rel="author" href="https://twitter.com/dilllxd" />
-        <link rel="publisher" href="https://twitter.com/dilllxd" />
-        <link rel="icon" href="https://dylanh.dev/static/img/favicon.ico">
+    <!-- OpenGraph -->
+    <meta property="og:title" content="Hi, I'm Dylan!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://dylanh.dev/static/img/favicon.ico" />
+    <meta property="og:url" content="index.html" />
+    <meta property="og:description" content="Welcome to my website!" />
 
-        <!-- OpenGraph -->
-        <meta property="og:title" content="Hi, I'm Dylan!" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dylanh.dev/static/img/favicon.ico" />
-        <meta property="og:url" content="index.html" />
-        <meta property="og:description" content="Welcome to my website!" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:url" content="index.html" />
+    <meta name="twitter:title" content="Hi, I'm Dylan!" />
+    <meta name="twitter:description" content="Welcome to my website!" />
+    <meta name="twitter:image" content="https://dylanh.dev/static/img/favicon.ico" />
 
-        <!-- Twitter -->
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="index.html" />
-        <meta name="twitter:title" content="Hi, I'm Dylan!" />
-        <meta name="twitter:description" content="Welcome to my website!" />
-        <meta name="twitter:image" content="https://dylanh.dev/static/img/favicon.ico" />
+    <title>Dylan | dylanh.dev</title>
 
-        <title>Dylan | dylanh.dev</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link href="static/css/site.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="background-aurora" aria-hidden="true"></div>
+    <div class="background-bubble background-bubble--one" aria-hidden="true"></div>
+    <div class="background-bubble background-bubble--two" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
 
-        <link href="static/css/all.css" rel="stylesheet">
+    <main class="page">
+      <header class="page__header">
+        <a class="brand" href="#top" aria-label="Home">DH</a>
+        <nav class="page__nav" aria-label="Primary">
+          <a href="#links">Links</a>
+          <a href="#now-playing">Live widget</a>
+          <a href="mailto:dylan@dylanh.dev">Contact</a>
+        </nav>
+      </header>
 
-    </head>
-
-    <body>
-
-        <canvas class="background"></canvas>
-        
-        <div id="content" class="contentpane">
-            <h1>Dylan H</h1>
-            <h4>I just do stuff online.<br>
-            <script>document.write(new Date().getFullYear() - 2015)</script> years of coding.</h4>
-            <p>
-                <i class="fab fa-discord"></i> <a href="https://discord.com/users/200654056992145408">dilll</a><br>
-                <i class="fab fa-github"></i> <a href="https://github.com/dilllxd">github.com/dilllxd</a><br>
-		<i class="fas fa-key"></i> <a href="https://keybase.io/dilll">keybase.io/dilll</a><br>
-                <i class="fas fa-envelope"></i> <a href="mailto:dylan@dylanh.dev">dylan@dylanh.dev</a><br>
-                <i class="fab fa-twitter"></i> <a href="https://x.com/dilllxd">x.com/dilllxd</a><br>
-                <i class="fab fa-youtube"></i> <a href="https://www.youtube.com/@dilllxd">youtube.com/@dilllxd</a><br>
-                <i class="fas fa-globe"></i> <a href="/">dylanh.dev</a> | <a href="https://status.dylan.lol">dylan.lol</a>
-                
-            </p>
-
+      <section class="hero" id="top">
+        <div class="hero__copy">
+          <p class="hero__eyebrow">Developer &amp; community builder</p>
+          <h1 class="hero__title">Hi, I'm Dylan.</h1>
+          <p class="hero__lead">I just do stuff online. <span data-years-since="2015">10</span> years of coding.</p>
+          <p class="hero__description">
+            I'm a self-taught engineer who loves building communities, experimenting with infrastructure,
+            and shipping things that make the internet a little more fun. You can usually find me hacking on
+            realtime experiences, tinkering with new ideas, or hanging out on Discord.
+          </p>
+          <div class="hero__actions" role="group" aria-label="Featured links">
+            <a
+              class="button button--primary"
+              href="https://discord.com/users/200654056992145408"
+              target="_blank"
+              rel="noopener"
+            >
+              <i class="fa-brands fa-discord" aria-hidden="true"></i>
+              <span>Chat on Discord</span>
+            </a>
+            <a
+              class="button button--ghost"
+              href="https://github.com/dilllxd"
+              target="_blank"
+              rel="noopener"
+            >
+              <i class="fa-brands fa-github" aria-hidden="true"></i>
+              <span>GitHub</span>
+            </a>
+            <a class="button button--ghost" href="mailto:dylan@dylanh.dev">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              <span>Email me</span>
+            </a>
+          </div>
         </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__orb hero__orb--one"></div>
+          <div class="hero__orb hero__orb--two"></div>
+          <div class="hero__panel">
+            <div class="hero__panel-header">
+              <span>Personal status feed</span>
+              <span class="hero__panel-status"><i class="fa-solid fa-bolt" aria-hidden="true"></i> In design</span>
+            </div>
+            <div class="hero__panel-body">
+              <p>
+                I'm building a live widget that will surface my current song, Discord status, or whatever I'm tinkering
+                with. This panel is ready for the API when it's done—stay tuned!
+              </p>
+              <span class="hero__panel-tag">Coming soon</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-		<script src="static/js/particles.min.js"></script>
+      <section id="links">
+        <h2 class="section-heading">Connect with me</h2>
+        <p class="section-subtitle">Everywhere you can find me across the internet.</p>
+        <div class="link-grid">
+          <a class="link-card" href="https://discord.com/users/200654056992145408" target="_blank" rel="noopener">
+            <span class="link-card__icon"><i class="fa-brands fa-discord" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">Discord</span>
+              <span class="link-card__url">@dilll</span>
+            </span>
+          </a>
+          <a class="link-card" href="https://github.com/dilllxd" target="_blank" rel="noopener">
+            <span class="link-card__icon"><i class="fa-brands fa-github" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">GitHub</span>
+              <span class="link-card__url">github.com/dilllxd</span>
+            </span>
+          </a>
+          <a class="link-card" href="https://keybase.io/dilll" target="_blank" rel="noopener">
+            <span class="link-card__icon"><i class="fa-solid fa-key" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">Keybase</span>
+              <span class="link-card__url">keybase.io/dilll</span>
+            </span>
+          </a>
+          <a class="link-card" href="mailto:dylan@dylanh.dev">
+            <span class="link-card__icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">Email</span>
+              <span class="link-card__url">dylan@dylanh.dev</span>
+            </span>
+          </a>
+          <a class="link-card" href="https://x.com/dilllxd" target="_blank" rel="noopener">
+            <span class="link-card__icon"><i class="fa-brands fa-twitter" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">X (Twitter)</span>
+              <span class="link-card__url">x.com/dilllxd</span>
+            </span>
+          </a>
+          <a class="link-card" href="https://www.youtube.com/@dilllxd" target="_blank" rel="noopener">
+            <span class="link-card__icon"><i class="fa-brands fa-youtube" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">YouTube</span>
+              <span class="link-card__url">youtube.com/@dilllxd</span>
+            </span>
+          </a>
+          <a class="link-card" href="/">
+            <span class="link-card__icon"><i class="fa-solid fa-globe" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">dylanh.dev</span>
+              <span class="link-card__url">This site</span>
+            </span>
+          </a>
+          <a class="link-card" href="https://status.dylan.lol" target="_blank" rel="noopener">
+            <span class="link-card__icon"><i class="fa-solid fa-signal" aria-hidden="true"></i></span>
+            <span class="link-card__content">
+              <span class="link-card__label">dylan.lol</span>
+              <span class="link-card__url">status.dylan.lol</span>
+            </span>
+          </a>
+        </div>
+      </section>
 
-        <script>
-            window.onload = function() {
-                Particles.init({
-                    selector: '.background',
-                    color: '#ffffff',
-                    connectParticles: true
-                })
-            }
-        </script>
-    </body>
+      <section id="now-playing">
+        <h2 class="section-heading">Live widget ready</h2>
+        <p class="section-subtitle">
+          The layout is ready for a future service that publishes my current song, Discord status, or any real-time
+          updates I want to share.
+        </p>
+        <div class="widget-card">
+          <div class="widget-card__header">
+            <span class="widget-card__title">
+              <i class="fa-solid fa-waveform-lines" aria-hidden="true"></i>
+              Realtime feed module
+            </span>
+            <span class="widget-card__badge">Placeholder</span>
+          </div>
+          <div class="widget-card__body">
+            Hook this card up to an API and it will elegantly display your live status. There's room for artwork,
+            song titles, Discord presence, or whatever stream of data you want to surface.
+          </div>
+          <div class="widget-placeholder">
+            <span class="widget-placeholder__label">
+              <i class="fa-solid fa-headphones" aria-hidden="true"></i>
+              Waiting for the next track
+            </span>
+            <span>
+              Drop in your widget markup or connect a script to populate this area once your status service is ready.
+              It can expand to fit rich media, album art, or quick status notes.
+            </span>
+          </div>
+        </div>
+      </section>
 
+      <footer>
+        <span>&copy; <span data-current-year>2025</span> Dylan H.</span>
+        <span>Built with a sprinkle of anime.js animations.</span>
+      </footer>
+    </main>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"
+      integrity="sha512-l0JvXmQDxC6P0ThqYjgJv1nVbWcv16O3MHuvb6jVWeItPxX2VINeodIZ6Tn6PvxI6Bfq5lHppZArYAjS6Vke3g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="static/js/site.js"></script>
+  </body>
 </html>
