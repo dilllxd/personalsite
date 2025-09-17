@@ -1,3 +1,5 @@
+import anime from 'https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.es.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   const yearsSinceElements = document.querySelectorAll('[data-years-since]');
@@ -88,127 +90,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  console.log('anime check:', typeof anime);
+  console.log('reduced motion:', prefersReducedMotion);
+
   if (prefersReducedMotion || typeof anime === 'undefined') {
+    console.log('Using fallback - no animations');
     document
-      .querySelectorAll('[data-animate], .link-card, .widget-shell')
+      .querySelectorAll('[data-animate]')
       .forEach((element) => element.classList.add('is-visible'));
     return;
   }
 
-  const timeline = anime.timeline({ easing: 'easeOutExpo', duration: 700 });
+  console.log('Running anime.js animations');
 
-  timeline
-    .add({
-      targets: '.hero__eyebrow',
-      translateY: [24, 0],
-      opacity: [0, 1],
-    })
-    .add(
-      {
-        targets: '.hero__title',
-        translateY: [36, 0],
-        opacity: [0, 1],
-      },
-      '-=520',
-    )
-    .add(
-      {
-        targets: '.hero__lead',
-        translateY: [32, 0],
-        opacity: [0, 1],
-      },
-      '-=560',
-    )
-    .add(
-      {
-        targets: '.hero__description',
-        translateY: [28, 0],
-        opacity: [0, 1],
-      },
-      '-=560',
-    )
-    .add(
-      {
-        targets: '.hero__stats',
-        translateY: [24, 0],
-        opacity: [0, 1],
-      },
-      '-=560',
-    )
-    .add(
-      {
-        targets: '.hero__stats .stat',
-        translateY: [18, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(90),
-      },
-      '-=500',
-    )
-    .add(
-      {
-        targets: '.hero__actions',
-        translateY: [20, 0],
-        opacity: [0, 1],
-      },
-      '-=540',
-    )
-    .add(
-      {
-        targets: '.hero__actions .button',
-        translateY: [18, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(80),
-      },
-      '-=520',
-    )
-    .add(
-      {
-        targets: '.card--links',
-        translateY: [28, 0],
-        opacity: [0, 1],
-      },
-      '-=500',
-    )
-    .add(
-      {
-        targets: '.card--links .link-card',
-        translateY: [18, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(70),
-      },
-      '-=540',
-    )
-    .add(
-      {
-        targets: '.card--widget',
-        translateY: [24, 0],
-        opacity: [0, 1],
-      },
-      '-=480',
-    )
-    .add(
-      {
-        targets: '.card--widget .widget-shell',
-        translateY: [16, 0],
-        opacity: [0, 1],
-      },
-      '-=520',
-    );
+  // Check if elements exist
+  const introEl = document.querySelector('.hero__intro[data-animate]');
+  const asideEl = document.querySelector('.hero__aside[data-animate]');
 
-  const orbs = document.querySelectorAll('[data-orb]');
+  console.log('intro element:', introEl);
+  console.log('aside element:', asideEl);
 
-  if (orbs.length) {
+  if (introEl) {
+    console.log('Animating intro with grouped animations');
+
+    // First animate the container
     anime({
-      targets: orbs,
-      translateX: () => anime.random(-40, 40),
-      translateY: () => anime.random(-60, 60),
-      scale: () => anime.random(90, 120) / 100,
-      opacity: () => anime.random(35, 60) / 100,
-      direction: 'alternate',
-      easing: 'easeInOutSine',
-      duration: () => anime.random(8000, 14000),
-      delay: anime.stagger(300),
-      loop: true,
+      targets: introEl,
+      opacity: [0, 1],
+      scale: [0.95, 1],
+      duration: 800,
+      delay: 200,
+      easing: 'easeOutQuart'
+    });
+
+    // Group 1: Header content (eyebrow, title, lead)
+    const headerGroup = introEl.querySelectorAll('.hero__eyebrow, .hero__title, .hero__lead');
+    anime({
+      targets: headerGroup,
+      opacity: [0, 1],
+      translateY: [10, 0],
+      duration: 600,
+      delay: 400,
+      easing: 'easeOutQuart'
+    });
+
+    // Group 2: Description and stats
+    const contentGroup = introEl.querySelectorAll('.hero__description, .hero__stats');
+    anime({
+      targets: contentGroup,
+      opacity: [0, 1],
+      translateY: [10, 0],
+      duration: 600,
+      delay: 600,
+      easing: 'easeOutQuart'
+    });
+
+    // Group 3: Actions
+    const actionsGroup = introEl.querySelectorAll('.hero__actions');
+    anime({
+      targets: actionsGroup,
+      opacity: [0, 1],
+      translateY: [10, 0],
+      duration: 600,
+      delay: 800,
+      easing: 'easeOutQuart'
+    });
+  }
+
+  if (asideEl) {
+    console.log('Animating aside with grouped animations');
+
+    // Animate the aside container
+    anime({
+      targets: asideEl,
+      opacity: [0, 1],
+      translateX: [30, 0],
+      duration: 800,
+      delay: 900,
+      easing: 'easeOutQuart'
+    });
+
+    // Group all cards together AND their link cards - everything at once
+    const cards = asideEl.querySelectorAll('.card');
+    const linkCards = asideEl.querySelectorAll('.link-card');
+    anime({
+      targets: [...cards, ...linkCards],
+      opacity: [0, 1],
+      translateY: [10, 0],
+      duration: 600,
+      delay: 1000,
+      easing: 'easeOutQuart'
+    });
+  }
+
+  // No fallback needed - only animating the main containers
+
+  // Subtle orb movements - very gentle
+  const orbs = document.querySelectorAll('[data-orb]');
+  if (orbs.length) {
+    orbs.forEach((orb, index) => {
+      anime({
+        targets: orb,
+        translateX: () => anime.random(-20, 20),
+        translateY: () => anime.random(-30, 30),
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        duration: () => anime.random(15000, 25000),
+        delay: index * 2000,
+        loop: true,
+      });
     });
   }
 });

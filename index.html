@@ -46,7 +46,7 @@
     />
     <link href="static/css/site.css" rel="stylesheet" />
   </head>
-  <body data-theme="dark">
+  <body data-theme="dark" style="display: flex; justify-content: center; margin: 0;">
     <div class="backdrop" aria-hidden="true">
       <div class="backdrop__gradient backdrop__gradient--one"></div>
       <div class="backdrop__gradient backdrop__gradient--two"></div>
@@ -62,41 +62,50 @@
 
     <main class="site">
       <header class="site__header">
-        <a class="site__brand" href="#top" aria-label="Home">
+        <a class="site__brand" href="#" aria-label="Home">
           <img class="site__brand-mark" src="static/img/favicon.ico" alt="Dylan H logo" width="48" height="48" />
           <span class="site__brand-text">dylanh.dev</span>
         </a>
+        <button
+          type="button"
+          class="theme-toggle"
+          data-theme-toggle
+          aria-label="Toggle color theme"
+          aria-pressed="false"
+        >
+          <span class="theme-toggle__icon" aria-hidden="true">
+            <i class="fa-solid fa-sun" data-theme-toggle-icon></i>
+          </span>
+          <span class="theme-toggle__label" data-theme-toggle-label>Light mode</span>
+        </button>
       </header>
 
       <section class="hero" id="top">
         <div class="hero__inner">
-          <div class="hero__intro">
-            <p class="hero__eyebrow" data-animate>Developer &amp; community builder</p>
-            <h1 class="hero__title" data-animate>Hi, I'm Dylan.</h1>
-            <p class="hero__lead" data-animate>
-              I just do stuff online. <span data-years-since="2015">10</span> years of shipping tools, building communities,
-              and keeping the vibes high.
+          <div class="hero__intro" data-animate>
+            <p class="hero__eyebrow">CS Student &amp; Hobbyist Developer</p>
+            <h1 class="hero__title">Hi, I'm Dylan.</h1>
+            <p class="hero__lead">
+              I do code stuff sometimes. Currently pursuing a BS in Computer Science while balancing studies with work and side projects.
             </p>
-            <p class="hero__description" data-animate>
-              I'm a self-taught engineer focused on realtime infrastructure, collaborative experiences, and creative
-              online communities. These days I'm experimenting with new status widgets, immersive streams, and ways to
-              keep friends connected across the web.
+            <p class="hero__description">
+              I'm really into the homelab scene and general development. I just like to build stuff that helps others and myself - whether it's Docker containers, streaming tools, or random projects that solve everyday problems.
             </p>
-            <div class="hero__stats" data-animate role="list">
+            <div class="hero__stats" role="list">
               <div class="stat" role="listitem">
                 <span class="stat__label">Years coding</span>
                 <span class="stat__value"><span data-years-since="2015">10</span>+</span>
               </div>
               <div class="stat" role="listitem">
                 <span class="stat__label">Based in</span>
-                <span class="stat__value">New York</span>
+                <span class="stat__value">South Carolina</span>
               </div>
               <div class="stat" role="listitem">
                 <span class="stat__label">Currently</span>
-                <span class="stat__value">Building status widgets</span>
+                <span class="stat__value">Studying CS</span>
               </div>
             </div>
-            <div class="hero__actions" data-animate role="group" aria-label="Featured links">
+            <div class="hero__actions" role="group" aria-label="Featured links">
               <a
                 class="button button--primary"
                 href="https://discord.com/users/200654056992145408"
@@ -122,54 +131,18 @@
             </div>
           </div>
 
-          <aside class="hero__aside">
-            <section class="card card--links" id="links" aria-labelledby="links-heading" data-animate>
+          <aside class="hero__aside" data-animate>
+            <section class="card card--links" id="links" aria-labelledby="links-heading">
               <div class="card__header">
                 <h2 class="card__title" id="links-heading">Find me online</h2>
                 <p class="card__subtitle">Quick launch points across the web.</p>
               </div>
               <div class="link-grid" role="list">
-                <a
-                  class="link-card"
-                  role="listitem"
-                  href="https://discord.com/users/200654056992145408"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <span class="link-card__icon" aria-hidden="true"><i class="fa-brands fa-discord"></i></span>
-                  <span class="link-card__body">
-                    <span class="link-card__label">Discord</span>
-                    <span class="link-card__meta">@dilll</span>
-                  </span>
-                  <span class="link-card__arrow" aria-hidden="true">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                  </span>
-                </a>
-                <a class="link-card" role="listitem" href="https://github.com/dilllxd" target="_blank" rel="noopener">
-                  <span class="link-card__icon" aria-hidden="true"><i class="fa-brands fa-github"></i></span>
-                  <span class="link-card__body">
-                    <span class="link-card__label">GitHub</span>
-                    <span class="link-card__meta">github.com/dilllxd</span>
-                  </span>
-                  <span class="link-card__arrow" aria-hidden="true">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                  </span>
-                </a>
                 <a class="link-card" role="listitem" href="https://keybase.io/dilll" target="_blank" rel="noopener">
                   <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-key"></i></span>
                   <span class="link-card__body">
                     <span class="link-card__label">Keybase</span>
                     <span class="link-card__meta">keybase.io/dilll</span>
-                  </span>
-                  <span class="link-card__arrow" aria-hidden="true">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                  </span>
-                </a>
-                <a class="link-card" role="listitem" href="mailto:dylan@dylanh.dev">
-                  <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
-                  <span class="link-card__body">
-                    <span class="link-card__label">Email</span>
-                    <span class="link-card__meta">dylan@dylanh.dev</span>
                   </span>
                   <span class="link-card__arrow" aria-hidden="true">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
@@ -201,16 +174,6 @@
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                   </span>
                 </a>
-                <a class="link-card" role="listitem" href="/">
-                  <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-globe"></i></span>
-                  <span class="link-card__body">
-                    <span class="link-card__label">dylanh.dev</span>
-                    <span class="link-card__meta">This site</span>
-                  </span>
-                  <span class="link-card__arrow" aria-hidden="true">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                  </span>
-                </a>
                 <a class="link-card" role="listitem" href="https://status.dylan.lol" target="_blank" rel="noopener">
                   <span class="link-card__icon" aria-hidden="true"><i class="fa-solid fa-signal"></i></span>
                   <span class="link-card__body">
@@ -224,7 +187,7 @@
               </div>
             </section>
 
-            <section class="card card--widget" id="now-playing" aria-labelledby="widget-heading" data-animate>
+            <section class="card card--widget" id="now-playing" aria-labelledby="widget-heading">
               <div class="card__header">
                 <h2 class="card__title" id="widget-heading">Live widget ready</h2>
                 <span class="card__badge">Coming soon</span>
@@ -251,29 +214,8 @@
         </div>
       </section>
 
-      <footer class="site__footer">
-        <p class="site__footer-copy">&copy; <span data-current-year>2025</span> Dylan H.</p>
-        <button
-          type="button"
-          class="theme-toggle"
-          data-theme-toggle
-          aria-label="Toggle color theme"
-          aria-pressed="false"
-        >
-          <span class="theme-toggle__icon" aria-hidden="true">
-            <i class="fa-solid fa-sun" data-theme-toggle-icon></i>
-          </span>
-          <span class="theme-toggle__label" data-theme-toggle-label>Light mode</span>
-        </button>
-      </footer>
     </main>
 
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"
-      integrity="sha512-l0JvXmQDxC6P0ThqYjgJv1nVbWcv16O3MHuvb6jVWeItPxX2VINeodIZ6Tn6PvxI6Bfq5lHppZArYAjS6Vke3g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="static/js/site.js"></script>
+    <script type="module" src="static/js/site.js"></script>
   </body>
 </html>
