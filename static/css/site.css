@@ -501,7 +501,7 @@ button {
 .widget-shell {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 1.2rem;
+  gap: 1.4rem;
   align-items: center;
   padding: 1.2rem 1.4rem;
   border-radius: var(--radius-md);
@@ -510,9 +510,9 @@ button {
 }
 
 .widget-shell__artwork {
-  width: 72px;
-  height: 72px;
-  border-radius: 16px;
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
   background: var(--accent-soft);
   border: 1px solid var(--border);
   position: relative;
@@ -540,22 +540,50 @@ button {
 }
 
 .widget-shell__label {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.6rem;
   font-weight: 600;
   font-size: 0.9rem;
 }
 
 .widget-shell__label i {
   color: var(--accent);
-  font-size: 1.1rem;
+  font-size: 1.35rem;
+  width: 1.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .widget-shell__hint {
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.widget-shell__hint-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.widget-shell__hint-line i {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  width: 1.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.widget-shell__hint-line span:last-child {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .site__footer {

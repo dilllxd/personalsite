@@ -216,15 +216,59 @@ document.addEventListener('DOMContentLoaded', () => {
     let updateInterval;
     let isConnected = false;
 
+    const setLabel = (iconClass, text) => {
+      if (!widgetLabel) return;
+      widgetLabel.innerHTML = `<i class="fa-solid ${iconClass}" aria-hidden="true"></i> ${text}`;
+    };
+
+    const setBadge = (text, color) => {
+      if (!cardBadge) return;
+      cardBadge.textContent = text;
+      cardBadge.style.backgroundColor = color;
+    };
+
+    const renderHintLines = (lines = [], fallbackText = '') => {
+      if (!widgetHint) return;
+      widgetHint.innerHTML = '';
+
+      if (!lines.length) {
+        widgetHint.textContent = fallbackText;
+        return;
+      }
+
+      lines.forEach(({ icon, text }) => {
+        if (!text) return;
+        const line = document.createElement('span');
+        line.className = 'widget-shell__hint-line';
+
+        if (icon) {
+          const iconEl = document.createElement('i');
+          iconEl.className = `fa-solid ${icon}`;
+          iconEl.setAttribute('aria-hidden', 'true');
+          line.appendChild(iconEl);
+        }
+
+        const textEl = document.createElement('span');
+        textEl.textContent = text;
+        line.appendChild(textEl);
+
+        widgetHint.appendChild(line);
+      });
+    };
+
+    const getTrackLine = (musicData) => {
+      const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : '';
+      const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
+      return [title, artist].filter(Boolean).join(' — ');
+    };
+
     const updateWidget = (activityData) => {
       if (!activityData) return;
 
       const musicData = activityData.music || {};
       const gameData = activityData.game || {};
 
-      const isMusicPlaying = musicData.status === 'Playing';
       const hasMusic = musicData.title && musicData.title !== 'Not Playing';
-      const isGamePlaying = gameData.status === 'Playing';
       const hasGame = gameData.name && gameData.name !== '';
 
       // Determine what to display based on current activities
@@ -251,28 +295,34 @@ document.addEventListener('DOMContentLoaded', () => {
         widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
         widgetArtwork.style.backgroundSize = 'cover';
         widgetArtwork.style.backgroundPosition = 'center';
+        widgetArtwork.style.opacity = '1';
+      } else if (widgetArtwork) {
+        widgetArtwork.style.backgroundImage = '';
+        widgetArtwork.style.opacity = '1';
       }
 
       // Update label
-      if (widgetLabel) {
-        const icon = isPlaying ? 'fa-music' : 'fa-pause';
-        const statusText = isPlaying ? 'Now playing' : 'Paused';
-        widgetLabel.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> ${statusText}`;
-      }
+      const icon = isPlaying ? 'fa-music' : 'fa-pause';
+      const statusText = isPlaying ? 'Listening to music' : 'Music paused';
+      setLabel(icon, statusText);
 
       // Update hint with track info
-      if (widgetHint) {
-        const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
-        const album = musicData.album && musicData.album !== 'Unknown' ? musicData.album : '';
-        const trackInfo = [musicData.title, artist, album].filter(Boolean).join(' • ');
-        widgetHint.textContent = trackInfo;
+      const trackLine = getTrackLine(musicData);
+      const album = musicData.album && musicData.album !== 'Unknown' ? musicData.album : '';
+      const hintLines = [];
+
+      if (trackLine) {
+        hintLines.push({ icon, text: trackLine });
       }
 
-      // Update badge
-      if (cardBadge) {
-        cardBadge.textContent = 'Live';
-        cardBadge.style.backgroundColor = isPlaying ? '#10b981' : '#f59e0b';
+      if (album && album !== musicData.title) {
+        hintLines.push({ icon: 'fa-compact-disc', text: album });
       }
+
+      renderHintLines(hintLines, 'Music details unavailable.');
+
+      // Update badge
+      setBadge(isPlaying ? 'Listening' : 'Music paused', isPlaying ? '#10b981' : '#f59e0b');
     };
 
     const updateForGame = (gameData, musicData = null) => {
@@ -282,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
           widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
           widgetArtwork.style.backgroundSize = 'cover';
           widgetArtwork.style.backgroundPosition = 'center';
-          widgetArtwork.style.opacity = '0.3'; // Dim the music artwork
+          widgetArtwork.style.opacity = '0.45'; // Dim the music artwork
         } else {
           widgetArtwork.style.backgroundImage = '';
           widgetArtwork.style.opacity = '1';
@@ -290,26 +340,43 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Update label for game
-      if (widgetLabel) {
-        const icon = 'fa-gamepad';
-        widgetLabel.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> Currently playing`;
-      }
+      const gameName = gameData.name && gameData.name !== '' ? gameData.name : 'In game';
+      const hasMusic =
+        musicData && musicData.title && musicData.title !== 'Not Playing';
+      const musicPlaying = hasMusic && musicData.status === 'Playing';
+      const labelIcon = hasMusic ? 'fa-headset' : 'fa-gamepad';
+      const labelText = hasMusic
+        ? musicPlaying
+          ? 'Gaming with music'
+          : 'Gaming (music paused)'
+        : `Playing ${gameName}`;
+
+      setLabel(labelIcon, labelText);
 
       // Update hint with game and optional music info
-      if (widgetHint) {
-        let hintText = gameData.name;
-        if (musicData && musicData.title && musicData.title !== 'Not Playing') {
-          const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
-          const musicInfo = artist ? `${musicData.title} by ${artist}` : musicData.title;
-          hintText += ` • 🎵 ${musicInfo}`;
-        }
-        widgetHint.textContent = hintText;
+      const hintLines = [];
+
+      if (gameName) {
+        hintLines.push({ icon: 'fa-gamepad', text: gameName });
       }
 
+      if (hasMusic) {
+        const musicLine = getTrackLine(musicData);
+        const prefix = musicPlaying ? '' : 'Paused — ';
+        const musicText = musicLine ? `${prefix}${musicLine}` : 'Music details unavailable';
+        hintLines.push({ icon: musicPlaying ? 'fa-music' : 'fa-pause', text: musicText });
+      }
+
+      renderHintLines(hintLines, 'Game details unavailable.');
+
       // Update badge
-      if (cardBadge) {
-        cardBadge.textContent = 'Gaming';
-        cardBadge.style.backgroundColor = '#8b5cf6'; // Purple for gaming
+      if (hasMusic) {
+        setBadge(
+          musicPlaying ? 'Gaming + Music' : 'Gaming + Music (Paused)',
+          musicPlaying ? '#6366f1' : '#8b5cf6'
+        );
+      } else {
+        setBadge('Gaming', '#8b5cf6'); // Purple for gaming
       }
     };
 
@@ -321,20 +388,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Update label
-      if (widgetLabel) {
-        widgetLabel.innerHTML = '<i class="fa-solid fa-waveform-lines" aria-hidden="true"></i>Currently idle';
-      }
+      setLabel('fa-waveform-lines', 'Currently idle');
 
       // Update hint
-      if (widgetHint) {
-        widgetHint.textContent = 'No music or games currently active. Start something to see it here.';
-      }
+      renderHintLines([], 'No music or games currently active. Start something to see it here.');
 
       // Update badge - keep it simple
-      if (cardBadge) {
-        cardBadge.textContent = 'Live';
-        cardBadge.style.backgroundColor = '#6b7280'; // Gray for idle
-      }
+      setBadge('Live', '#6b7280'); // Gray for idle
     };
 
     const updateForConnectionError = () => {
@@ -345,20 +405,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Update label to show connection status
-      if (widgetLabel) {
-        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi" aria-hidden="true"></i>Connection lost';
-      }
+      setLabel('fa-wifi', 'Connection lost');
 
       // Update hint
-      if (widgetHint) {
-        widgetHint.textContent = 'Unable to connect to activity service. Retrying...';
-      }
+      renderHintLines([], 'Unable to connect to activity service. Retrying...');
 
       // Update badge
-      if (cardBadge) {
-        cardBadge.textContent = 'Reconnecting';
-        cardBadge.style.backgroundColor = '#f59e0b'; // Orange for connection issues
-      }
+      setBadge('Reconnecting', '#f59e0b'); // Orange for connection issues
     };
 
     const updateForConnecting = () => {
@@ -369,20 +422,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Update label
-      if (widgetLabel) {
-        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi" aria-hidden="true"></i>Connecting...';
-      }
+      setLabel('fa-wifi', 'Connecting...');
 
       // Update hint
-      if (widgetHint) {
-        widgetHint.textContent = 'Establishing connection to activity service.';
-      }
+      renderHintLines([], 'Establishing connection to activity service.');
 
       // Update badge
-      if (cardBadge) {
-        cardBadge.textContent = 'Connecting';
-        cardBadge.style.backgroundColor = '#3b82f6'; // Blue for connecting
-      }
+      setBadge('Connecting', '#3b82f6'); // Blue for connecting
     };
 
     const fetchActivityData = async () => {
