@@ -4,112 +4,112 @@
   --radius-sm: 12px;
   --surface-blur: saturate(140%) blur(20px);
   --transition-base: 0.25s ease;
-  --shadow-soft: 0 20px 55px rgba(7, 12, 32, 0.45);
-  --shadow-card: 0 12px 35px rgba(8, 11, 30, 0.55);
+  --shadow-soft: 0 20px 55px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 12px 35px rgba(0, 0, 0, 0.55);
   --noise-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 
-  --bg-gradient: radial-gradient(120% 140% at -10% -20%, rgba(123, 92, 255, 0.28) 0, transparent 55%),
-    radial-gradient(120% 120% at 90% -10%, rgba(56, 189, 248, 0.25) 0, transparent 60%),
-    linear-gradient(165deg, #030512 0%, #05091a 42%, #02030b 100%);
-  --card-color: rgba(8, 12, 30, 0.7);
-  --card-border: rgba(123, 92, 255, 0.22);
-  --card-border-strong: rgba(123, 92, 255, 0.32);
-  --text-primary: #f4f6ff;
-  --text-secondary: rgba(221, 226, 255, 0.78);
-  --text-muted: rgba(221, 226, 255, 0.6);
-  --accent: #7b5cff;
-  --accent-alt: #38bdf8;
-  --accent-soft: rgba(123, 92, 255, 0.22);
-  --accent-gradient: linear-gradient(145deg, rgba(123, 92, 255, 0.85), rgba(56, 189, 248, 0.6));
-  --accent-gradient-strong: linear-gradient(140deg, rgba(123, 92, 255, 0.65), rgba(56, 189, 248, 0.45));
-  --badge-bg: rgba(56, 189, 248, 0.22);
-  --badge-text: #a5f3fc;
-  --tag-bg: rgba(123, 92, 255, 0.22);
-  --tag-text: #d7dbff;
-  --placeholder-bg: rgba(123, 92, 255, 0.16);
-  --placeholder-border: rgba(123, 92, 255, 0.45);
-  --placeholder-text: rgba(226, 230, 255, 0.75);
-  --link-card-icon-bg: rgba(123, 92, 255, 0.28);
-  --link-card-border-hover: rgba(123, 92, 255, 0.45);
-  --link-card-hover-shadow: 0 22px 40px rgba(9, 14, 35, 0.45);
-  --footer-muted: rgba(226, 230, 255, 0.55);
-  --noise-opacity: 0.08;
+  --bg-gradient: radial-gradient(120% 140% at -10% -20%, rgba(51, 51, 58, 0.32) 0, transparent 60%),
+    radial-gradient(120% 120% at 90% -10%, rgba(33, 33, 36, 0.3) 0, transparent 65%),
+    linear-gradient(165deg, #030303 0%, #070708 45%, #050505 100%);
+  --card-color: rgba(16, 16, 20, 0.82);
+  --card-border: rgba(148, 163, 184, 0.16);
+  --card-border-strong: rgba(148, 163, 184, 0.26);
+  --text-primary: #f9fafb;
+  --text-secondary: rgba(209, 213, 219, 0.82);
+  --text-muted: rgba(148, 163, 184, 0.68);
+  --accent: #f5f5f5;
+  --accent-alt: #e5e7eb;
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --accent-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(148, 163, 184, 0.12));
+  --accent-gradient-strong: linear-gradient(140deg, rgba(255, 255, 255, 0.25), rgba(148, 163, 184, 0.14));
+  --badge-bg: rgba(148, 163, 184, 0.16);
+  --badge-text: #e2e8f0;
+  --tag-bg: rgba(82, 82, 91, 0.24);
+  --tag-text: #f4f4f5;
+  --placeholder-bg: rgba(148, 163, 184, 0.08);
+  --placeholder-border: rgba(148, 163, 184, 0.28);
+  --placeholder-text: rgba(226, 232, 240, 0.75);
+  --link-card-icon-bg: rgba(148, 163, 184, 0.14);
+  --link-card-border-hover: rgba(226, 232, 240, 0.22);
+  --link-card-hover-shadow: 0 22px 42px rgba(2, 2, 5, 0.55);
+  --footer-muted: rgba(148, 163, 184, 0.6);
+  --noise-opacity: 0.07;
   --noise-blend: soft-light;
-  --nav-surface: rgba(8, 12, 34, 0.55);
-  --nav-border: rgba(123, 92, 255, 0.25);
-  --brand-background: linear-gradient(145deg, rgba(123, 92, 255, 0.75), rgba(54, 209, 220, 0.55));
-  --brand-glow: 0 12px 30px rgba(81, 90, 255, 0.35);
-  --button-primary-gradient: linear-gradient(135deg, rgba(123, 92, 255, 0.9), rgba(54, 209, 220, 0.85));
-  --button-primary-shadow: 0 12px 30px rgba(81, 90, 255, 0.35);
-  --button-ghost-bg: rgba(12, 16, 36, 0.45);
-  --button-ghost-border: rgba(123, 92, 255, 0.35);
-  --button-hover-shadow: 0 18px 38px rgba(79, 94, 255, 0.35);
-  --toggle-bg: rgba(123, 92, 255, 0.24);
-  --toggle-border: rgba(123, 92, 255, 0.32);
-  --toggle-hover-bg: rgba(123, 92, 255, 0.35);
-  --panel-status-bg: rgba(123, 92, 255, 0.2);
-  --panel-status-text: rgba(226, 230, 255, 0.8);
-  --orb-gradient: radial-gradient(circle at 30% 30%, rgba(123, 92, 255, 0.95), rgba(123, 92, 255, 0) 65%),
-    radial-gradient(circle at 70% 70%, rgba(56, 189, 248, 0.9), rgba(56, 189, 248, 0) 65%);
-  --aurora-glow: 0 40px 120px rgba(43, 79, 255, 0.35);
-  --aurora-one: rgba(123, 92, 255, 0.6);
-  --aurora-two: rgba(56, 189, 248, 0.5);
-  --aurora-three: rgba(236, 72, 153, 0.25);
-  --bubble-one: rgba(123, 92, 255, 0.45);
-  --bubble-two: rgba(56, 189, 248, 0.38);
+  --nav-surface: rgba(12, 12, 16, 0.62);
+  --nav-border: rgba(148, 163, 184, 0.18);
+  --brand-background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(82, 82, 91, 0.22));
+  --brand-glow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  --button-primary-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(82, 82, 91, 0.2));
+  --button-primary-shadow: 0 12px 32px rgba(0, 0, 0, 0.48);
+  --button-ghost-bg: rgba(18, 18, 22, 0.85);
+  --button-ghost-border: rgba(148, 163, 184, 0.24);
+  --button-hover-shadow: 0 18px 38px rgba(0, 0, 0, 0.5);
+  --toggle-bg: rgba(24, 24, 28, 0.78);
+  --toggle-border: rgba(148, 163, 184, 0.24);
+  --toggle-hover-bg: rgba(36, 36, 44, 0.85);
+  --panel-status-bg: rgba(148, 163, 184, 0.12);
+  --panel-status-text: rgba(226, 232, 240, 0.82);
+  --orb-gradient: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 65%),
+    radial-gradient(circle at 70% 70%, rgba(148, 163, 184, 0.35), rgba(148, 163, 184, 0) 60%);
+  --aurora-glow: 0 40px 140px rgba(15, 15, 20, 0.6);
+  --aurora-one: rgba(82, 82, 91, 0.42);
+  --aurora-two: rgba(63, 63, 70, 0.35);
+  --aurora-three: rgba(39, 39, 42, 0.45);
+  --bubble-one: rgba(148, 163, 184, 0.18);
+  --bubble-two: rgba(82, 82, 91, 0.2);
 }
 
 body[data-theme='light'] {
   color-scheme: light;
-  --bg-gradient: radial-gradient(140% 120% at -20% 0%, rgba(99, 102, 241, 0.18) 0, transparent 60%),
-    radial-gradient(120% 120% at 90% 10%, rgba(59, 130, 246, 0.16) 0, transparent 55%),
-    linear-gradient(180deg, #f6f7fb 0%, #f1f3ff 40%, #eef2ff 100%);
-  --card-color: rgba(255, 255, 255, 0.7);
-  --card-border: rgba(79, 70, 229, 0.18);
-  --card-border-strong: rgba(79, 70, 229, 0.28);
-  --text-primary: #0f172a;
-  --text-secondary: rgba(15, 23, 42, 0.78);
-  --text-muted: rgba(15, 23, 42, 0.62);
-  --accent: #4f46e5;
-  --accent-alt: #0284c7;
-  --accent-soft: rgba(79, 70, 229, 0.16);
-  --accent-gradient: linear-gradient(145deg, rgba(79, 70, 229, 0.9), rgba(14, 165, 233, 0.65));
-  --accent-gradient-strong: linear-gradient(140deg, rgba(79, 70, 229, 0.55), rgba(14, 165, 233, 0.45));
-  --badge-bg: rgba(14, 165, 233, 0.18);
-  --badge-text: #0369a1;
-  --tag-bg: rgba(79, 70, 229, 0.14);
-  --tag-text: #4338ca;
-  --placeholder-bg: rgba(79, 70, 229, 0.08);
-  --placeholder-border: rgba(79, 70, 229, 0.28);
-  --placeholder-text: rgba(15, 23, 42, 0.75);
-  --link-card-icon-bg: rgba(79, 70, 229, 0.18);
-  --link-card-border-hover: rgba(79, 70, 229, 0.35);
-  --link-card-hover-shadow: 0 24px 40px rgba(15, 23, 42, 0.18);
-  --footer-muted: rgba(15, 23, 42, 0.6);
+  --bg-gradient: radial-gradient(140% 120% at -20% 0%, rgba(209, 213, 219, 0.2) 0, transparent 60%),
+    radial-gradient(120% 120% at 90% 10%, rgba(148, 163, 184, 0.16) 0, transparent 55%),
+    linear-gradient(180deg, #f5f5f5 0%, #f3f4f6 50%, #eceef1 100%);
+  --card-color: rgba(255, 255, 255, 0.75);
+  --card-border: rgba(148, 163, 184, 0.18);
+  --card-border-strong: rgba(148, 163, 184, 0.26);
+  --text-primary: #111827;
+  --text-secondary: rgba(55, 65, 81, 0.78);
+  --text-muted: rgba(100, 116, 139, 0.68);
+  --accent: #1f2937;
+  --accent-alt: #374151;
+  --accent-soft: rgba(17, 24, 39, 0.08);
+  --accent-gradient: linear-gradient(135deg, rgba(17, 24, 39, 0.16), rgba(71, 85, 105, 0.12));
+  --accent-gradient-strong: linear-gradient(140deg, rgba(17, 24, 39, 0.2), rgba(71, 85, 105, 0.18));
+  --badge-bg: rgba(148, 163, 184, 0.18);
+  --badge-text: #1f2937;
+  --tag-bg: rgba(148, 163, 184, 0.18);
+  --tag-text: #1f2937;
+  --placeholder-bg: rgba(148, 163, 184, 0.12);
+  --placeholder-border: rgba(148, 163, 184, 0.24);
+  --placeholder-text: rgba(55, 65, 81, 0.75);
+  --link-card-icon-bg: rgba(148, 163, 184, 0.16);
+  --link-card-border-hover: rgba(100, 116, 139, 0.3);
+  --link-card-hover-shadow: 0 24px 40px rgba(15, 23, 42, 0.12);
+  --footer-muted: rgba(100, 116, 139, 0.7);
   --noise-opacity: 0.05;
   --noise-blend: multiply;
-  --nav-surface: rgba(255, 255, 255, 0.65);
-  --nav-border: rgba(79, 70, 229, 0.2);
-  --brand-background: linear-gradient(145deg, rgba(79, 70, 229, 0.85), rgba(14, 165, 233, 0.65));
-  --brand-glow: 0 12px 30px rgba(79, 70, 229, 0.35);
-  --button-primary-gradient: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(14, 165, 233, 0.8));
-  --button-primary-shadow: 0 12px 30px rgba(79, 70, 229, 0.25);
-  --button-ghost-bg: rgba(248, 250, 255, 0.72);
-  --button-ghost-border: rgba(79, 70, 229, 0.22);
-  --button-hover-shadow: 0 16px 32px rgba(79, 70, 229, 0.22);
-  --toggle-bg: rgba(79, 70, 229, 0.15);
-  --toggle-border: rgba(79, 70, 229, 0.28);
-  --toggle-hover-bg: rgba(79, 70, 229, 0.25);
-  --panel-status-bg: rgba(79, 70, 229, 0.16);
-  --panel-status-text: rgba(15, 23, 42, 0.7);
-  --orb-gradient: radial-gradient(circle at 30% 30%, rgba(79, 70, 229, 0.85), rgba(79, 70, 229, 0) 65%),
-    radial-gradient(circle at 70% 70%, rgba(14, 165, 233, 0.75), rgba(14, 165, 233, 0) 65%);
-  --aurora-glow: 0 40px 120px rgba(79, 70, 229, 0.25);
-  --aurora-one: rgba(99, 102, 241, 0.45);
-  --aurora-two: rgba(14, 165, 233, 0.35);
-  --aurora-three: rgba(236, 72, 153, 0.18);
-  --bubble-one: rgba(79, 70, 229, 0.3);
-  --bubble-two: rgba(14, 165, 233, 0.28);
+  --nav-surface: rgba(255, 255, 255, 0.7);
+  --nav-border: rgba(148, 163, 184, 0.22);
+  --brand-background: linear-gradient(145deg, rgba(17, 24, 39, 0.12), rgba(100, 116, 139, 0.18));
+  --brand-glow: 0 12px 26px rgba(148, 163, 184, 0.25);
+  --button-primary-gradient: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(71, 85, 105, 0.85));
+  --button-primary-shadow: 0 12px 30px rgba(71, 85, 105, 0.28);
+  --button-ghost-bg: rgba(248, 250, 252, 0.72);
+  --button-ghost-border: rgba(148, 163, 184, 0.22);
+  --button-hover-shadow: 0 16px 32px rgba(71, 85, 105, 0.22);
+  --toggle-bg: rgba(226, 232, 240, 0.8);
+  --toggle-border: rgba(148, 163, 184, 0.3);
+  --toggle-hover-bg: rgba(209, 213, 219, 0.85);
+  --panel-status-bg: rgba(148, 163, 184, 0.2);
+  --panel-status-text: rgba(55, 65, 81, 0.75);
+  --orb-gradient: radial-gradient(circle at 30% 30%, rgba(71, 85, 105, 0.55), rgba(71, 85, 105, 0) 65%),
+    radial-gradient(circle at 70% 70%, rgba(148, 163, 184, 0.45), rgba(148, 163, 184, 0) 60%);
+  --aurora-glow: 0 40px 120px rgba(148, 163, 184, 0.28);
+  --aurora-one: rgba(209, 213, 219, 0.35);
+  --aurora-two: rgba(148, 163, 184, 0.28);
+  --aurora-three: rgba(100, 116, 139, 0.2);
+  --bubble-one: rgba(148, 163, 184, 0.28);
+  --bubble-two: rgba(209, 213, 219, 0.22);
   --shadow-soft: 0 18px 32px rgba(15, 23, 42, 0.18);
   --shadow-card: 0 24px 45px rgba(15, 23, 42, 0.18);
 }
@@ -187,7 +187,7 @@ a:focus-visible {
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18), var(--brand-glow);
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .page__nav {
@@ -235,7 +235,7 @@ a:focus-visible {
 .theme-toggle:focus-visible {
   background: var(--toggle-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(9, 14, 35, 0.32);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
 }
 
 .theme-toggle__icon {
