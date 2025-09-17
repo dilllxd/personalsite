@@ -45,7 +45,7 @@
     />
     <link href="static/css/site.css" rel="stylesheet" />
   </head>
-  <body>
+  <body data-theme="dark">
     <div class="background-aurora" aria-hidden="true"></div>
     <div class="background-bubble background-bubble--one" aria-hidden="true"></div>
     <div class="background-bubble background-bubble--two" aria-hidden="true"></div>
@@ -54,11 +54,25 @@
     <main class="page">
       <header class="page__header">
         <a class="brand" href="#top" aria-label="Home">DH</a>
-        <nav class="page__nav" aria-label="Primary">
-          <a href="#links">Links</a>
-          <a href="#now-playing">Live widget</a>
-          <a href="mailto:dylan@dylanh.dev">Contact</a>
-        </nav>
+        <div class="page__header-actions">
+          <nav class="page__nav" aria-label="Primary">
+            <a href="#links">Links</a>
+            <a href="#now-playing">Live widget</a>
+            <a href="mailto:dylan@dylanh.dev">Contact</a>
+          </nav>
+          <button
+            type="button"
+            class="theme-toggle"
+            data-theme-toggle
+            aria-label="Toggle color theme"
+            aria-pressed="false"
+          >
+            <span class="theme-toggle__icon" aria-hidden="true">
+              <i class="fa-solid fa-sun" data-theme-toggle-icon></i>
+            </span>
+            <span class="theme-toggle__label" data-theme-toggle-label>Light mode</span>
+          </button>
+        </div>
       </header>
 
       <section class="hero" id="top">
