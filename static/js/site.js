@@ -90,7 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (prefersReducedMotion || typeof anime === 'undefined') {
     document
-      .querySelectorAll('.hero__eyebrow, .hero__title, .hero__lead, .hero__description, .hero__actions a, .link-card')
+      .querySelectorAll(
+        '.hero__eyebrow, .hero__title, .hero__lead, .hero__description, .hero__highlights, .hero__actions, .hero__actions a, .panel, .link-list__item, .widget-shell',
+      )
       .forEach((element) => element.classList.add('is-visible'));
     return;
   }
@@ -121,40 +123,71 @@ document.addEventListener('DOMContentLoaded', () => {
     .add(
       {
         targets: '.hero__description',
-        translateY: [40, 0],
+        translateY: [36, 0],
         opacity: [0, 1],
       },
-      '-=650',
+      '-=620',
     )
     .add(
       {
-        targets: '.hero__actions a',
-        translateY: [30, 0],
+        targets: '.hero__highlights',
+        translateY: [32, 0],
         opacity: [0, 1],
-        delay: anime.stagger(80),
       },
       '-=600',
     )
     .add(
       {
-        targets: '.link-card',
+        targets: '.hero__highlights li',
+        translateY: [26, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(90),
+      },
+      '-=600',
+    )
+    .add(
+      {
+        targets: '.hero__actions',
+        translateY: [24, 0],
+        opacity: [0, 1],
+      },
+      '-=580',
+    )
+    .add(
+      {
+        targets: '.hero__actions .button',
+        translateY: [24, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(70),
+      },
+      '-=600',
+    )
+    .add(
+      {
+        targets: '.panel',
+        translateY: [28, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(120),
+      },
+      '-=540',
+    )
+    .add(
+      {
+        targets: '.panel--links .link-list__item',
         translateY: [20, 0],
         opacity: [0, 1],
         delay: anime.stagger(70),
       },
-      '-=400',
+      '-=520',
+    )
+    .add(
+      {
+        targets: '.panel--widget .widget-shell',
+        translateY: [20, 0],
+        opacity: [0, 1],
+      },
+      '-=480',
     );
-
-  anime({
-    targets: '.hero__orb',
-    translateY: [40, -60],
-    scale: [1, 1.08],
-    direction: 'alternate',
-    loop: true,
-    duration: 5200,
-    easing: 'easeInOutSine',
-    delay: anime.stagger(300),
-  });
 
   anime({
     targets: '.background-bubble',

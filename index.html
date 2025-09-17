@@ -12,7 +12,8 @@
     <meta name="author" content="Dylan H" />
     <link rel="author" href="https://twitter.com/dilllxd" />
     <link rel="publisher" href="https://twitter.com/dilllxd" />
-    <link rel="icon" href="https://dylanh.dev/static/img/favicon.ico" />
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon" />
 
     <!-- OpenGraph -->
     <meta property="og:title" content="Hi, I'm Dylan!" />
@@ -53,7 +54,9 @@
 
     <main class="page">
       <header class="page__header">
-        <a class="brand" href="#top" aria-label="Home">DH</a>
+        <a class="brand" href="#top" aria-label="Home">
+          <img class="brand__mark" src="static/img/favicon.ico" alt="Dylan H logo" width="28" height="28" />
+        </a>
         <div class="page__header-actions">
           <nav class="page__nav" aria-label="Primary">
             <a href="#links">Links</a>
@@ -76,154 +79,217 @@
       </header>
 
       <section class="hero" id="top">
-        <div class="hero__copy">
-          <p class="hero__eyebrow">Developer &amp; community builder</p>
-          <h1 class="hero__title">Hi, I'm Dylan.</h1>
-          <p class="hero__lead">I just do stuff online. <span data-years-since="2015">10</span> years of coding.</p>
-          <p class="hero__description">
-            I'm a self-taught engineer who loves building communities, experimenting with infrastructure,
-            and shipping things that make the internet a little more fun. You can usually find me hacking on
-            realtime experiences, tinkering with new ideas, or hanging out on Discord.
-          </p>
-          <div class="hero__actions" role="group" aria-label="Featured links">
-            <a
-              class="button button--primary"
-              href="https://discord.com/users/200654056992145408"
-              target="_blank"
-              rel="noopener"
-            >
-              <i class="fa-brands fa-discord" aria-hidden="true"></i>
-              <span>Chat on Discord</span>
-            </a>
-            <a
-              class="button button--ghost"
-              href="https://github.com/dilllxd"
-              target="_blank"
-              rel="noopener"
-            >
-              <i class="fa-brands fa-github" aria-hidden="true"></i>
-              <span>GitHub</span>
-            </a>
-            <a class="button button--ghost" href="mailto:dylan@dylanh.dev">
-              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-              <span>Email me</span>
-            </a>
-          </div>
-        </div>
-        <div class="hero__visual" aria-hidden="true">
-          <div class="hero__orb hero__orb--one"></div>
-          <div class="hero__orb hero__orb--two"></div>
-          <div class="hero__panel">
-            <div class="hero__panel-header">
-              <span>Personal status feed</span>
-              <span class="hero__panel-status"><i class="fa-solid fa-bolt" aria-hidden="true"></i> In design</span>
-            </div>
-            <div class="hero__panel-body">
+        <div class="hero__layout">
+          <div class="hero__intro">
+            <p class="hero__eyebrow will-animate">Developer &amp; community builder</p>
+            <h1 class="hero__title will-animate">Hi, I'm Dylan.</h1>
+            <p class="hero__lead will-animate">
+              I just do stuff online. <span data-years-since="2015">10</span> years of shipping tools, building
+              communities, and keeping the vibes high.
+            </p>
+            <div class="hero__description will-animate">
               <p>
-                I'm building a live widget that will surface my current song, Discord status, or whatever I'm tinkering
-                with. This panel is ready for the API when it's done—stay tuned!
+                I'm a self-taught engineer focused on realtime infrastructure, collaborative experiences, and creative
+                online communities. These days I'm experimenting with new status widgets, immersive streams, and ways to
+                keep friends connected across the web.
               </p>
-              <span class="hero__panel-tag">Coming soon</span>
+            </div>
+            <ul class="hero__highlights will-animate" role="list">
+              <li>
+                <span class="hero__highlight-label">Years coding</span>
+                <span class="hero__highlight-value"><span data-years-since="2015">10</span>+</span>
+              </li>
+              <li>
+                <span class="hero__highlight-label">Based in</span>
+                <span class="hero__highlight-value">New York</span>
+              </li>
+              <li>
+                <span class="hero__highlight-label">Currently</span>
+                <span class="hero__highlight-value">Building status widgets</span>
+              </li>
+            </ul>
+            <div class="hero__actions will-animate" role="group" aria-label="Featured links">
+              <a
+                class="button button--primary"
+                href="https://discord.com/users/200654056992145408"
+                target="_blank"
+                rel="noopener"
+              >
+                <i class="fa-brands fa-discord" aria-hidden="true"></i>
+                <span>Chat on Discord</span>
+              </a>
+              <a
+                class="button button--ghost"
+                href="https://github.com/dilllxd"
+                target="_blank"
+                rel="noopener"
+              >
+                <i class="fa-brands fa-github" aria-hidden="true"></i>
+                <span>GitHub</span>
+              </a>
+              <a class="button button--ghost" href="mailto:dylan@dylanh.dev">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                <span>Email me</span>
+              </a>
             </div>
           </div>
+          <div class="hero__aside">
+            <section class="panel panel--links will-animate" id="links" aria-labelledby="links-heading">
+              <div class="panel__header">
+                <h2 class="panel__title" id="links-heading">Find me online</h2>
+                <p class="panel__subtitle">Quick launch points across the web.</p>
+              </div>
+              <div class="panel__body">
+                <div class="link-list" role="list">
+                  <a
+                    class="link-list__item will-animate"
+                    role="listitem"
+                    href="https://discord.com/users/200654056992145408"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-discord"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">Discord</span>
+                      <span class="link-list__meta">@dilll</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                  <a
+                    class="link-list__item will-animate"
+                    role="listitem"
+                    href="https://github.com/dilllxd"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-github"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">GitHub</span>
+                      <span class="link-list__meta">github.com/dilllxd</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                  <a
+                    class="link-list__item will-animate"
+                    role="listitem"
+                    href="https://keybase.io/dilll"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-key"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">Keybase</span>
+                      <span class="link-list__meta">keybase.io/dilll</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                  <a class="link-list__item will-animate" role="listitem" href="mailto:dylan@dylanh.dev">
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">Email</span>
+                      <span class="link-list__meta">dylan@dylanh.dev</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                  <a
+                    class="link-list__item will-animate"
+                    role="listitem"
+                    href="https://x.com/dilllxd"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-twitter"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">X (Twitter)</span>
+                      <span class="link-list__meta">@dilllxd</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                  <a
+                    class="link-list__item will-animate"
+                    role="listitem"
+                    href="https://www.youtube.com/@dilllxd"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-brands fa-youtube"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">YouTube</span>
+                      <span class="link-list__meta">youtube.com/@dilllxd</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                  <a class="link-list__item will-animate" role="listitem" href="/">
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-globe"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">dylanh.dev</span>
+                      <span class="link-list__meta">This site</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                  <a
+                    class="link-list__item will-animate"
+                    role="listitem"
+                    href="https://status.dylan.lol"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <span class="link-list__icon" aria-hidden="true"><i class="fa-solid fa-signal"></i></span>
+                    <span class="link-list__text">
+                      <span class="link-list__label">Status page</span>
+                      <span class="link-list__meta">status.dylan.lol</span>
+                    </span>
+                    <span class="link-list__arrow" aria-hidden="true">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </section>
+            <section class="panel panel--widget will-animate" id="now-playing" aria-labelledby="widget-heading">
+              <div class="panel__header">
+                <h2 class="panel__title" id="widget-heading">Live widget ready</h2>
+                <span class="panel__badge">Coming soon</span>
+              </div>
+              <div class="panel__body">
+                <p>
+                  Drop in your API-powered widget and this space will showcase your current song, Discord status, or any
+                  realtime feed you're experimenting with.
+                </p>
+              </div>
+              <div class="widget-shell will-animate" aria-hidden="true">
+                <div class="widget-shell__artwork"></div>
+                <div class="widget-shell__meta">
+                  <span class="widget-shell__label">
+                    <i class="fa-solid fa-waveform-lines" aria-hidden="true"></i>
+                    Waiting for the next track
+                  </span>
+                  <span class="widget-shell__hint">
+                    Wire this up to your upcoming status service and the artwork, title, and activity will slot right
+                    in.
+                  </span>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
       </section>
 
-      <section id="links">
-        <h2 class="section-heading">Connect with me</h2>
-        <p class="section-subtitle">Everywhere you can find me across the internet.</p>
-        <div class="link-grid">
-          <a class="link-card" href="https://discord.com/users/200654056992145408" target="_blank" rel="noopener">
-            <span class="link-card__icon"><i class="fa-brands fa-discord" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">Discord</span>
-              <span class="link-card__url">@dilll</span>
-            </span>
-          </a>
-          <a class="link-card" href="https://github.com/dilllxd" target="_blank" rel="noopener">
-            <span class="link-card__icon"><i class="fa-brands fa-github" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">GitHub</span>
-              <span class="link-card__url">github.com/dilllxd</span>
-            </span>
-          </a>
-          <a class="link-card" href="https://keybase.io/dilll" target="_blank" rel="noopener">
-            <span class="link-card__icon"><i class="fa-solid fa-key" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">Keybase</span>
-              <span class="link-card__url">keybase.io/dilll</span>
-            </span>
-          </a>
-          <a class="link-card" href="mailto:dylan@dylanh.dev">
-            <span class="link-card__icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">Email</span>
-              <span class="link-card__url">dylan@dylanh.dev</span>
-            </span>
-          </a>
-          <a class="link-card" href="https://x.com/dilllxd" target="_blank" rel="noopener">
-            <span class="link-card__icon"><i class="fa-brands fa-twitter" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">X (Twitter)</span>
-              <span class="link-card__url">x.com/dilllxd</span>
-            </span>
-          </a>
-          <a class="link-card" href="https://www.youtube.com/@dilllxd" target="_blank" rel="noopener">
-            <span class="link-card__icon"><i class="fa-brands fa-youtube" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">YouTube</span>
-              <span class="link-card__url">youtube.com/@dilllxd</span>
-            </span>
-          </a>
-          <a class="link-card" href="/">
-            <span class="link-card__icon"><i class="fa-solid fa-globe" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">dylanh.dev</span>
-              <span class="link-card__url">This site</span>
-            </span>
-          </a>
-          <a class="link-card" href="https://status.dylan.lol" target="_blank" rel="noopener">
-            <span class="link-card__icon"><i class="fa-solid fa-signal" aria-hidden="true"></i></span>
-            <span class="link-card__content">
-              <span class="link-card__label">dylan.lol</span>
-              <span class="link-card__url">status.dylan.lol</span>
-            </span>
-          </a>
-        </div>
-      </section>
-
-      <section id="now-playing">
-        <h2 class="section-heading">Live widget ready</h2>
-        <p class="section-subtitle">
-          The layout is ready for a future service that publishes my current song, Discord status, or any real-time
-          updates I want to share.
-        </p>
-        <div class="widget-card">
-          <div class="widget-card__header">
-            <span class="widget-card__title">
-              <i class="fa-solid fa-waveform-lines" aria-hidden="true"></i>
-              Realtime feed module
-            </span>
-            <span class="widget-card__badge">Placeholder</span>
-          </div>
-          <div class="widget-card__body">
-            Hook this card up to an API and it will elegantly display your live status. There's room for artwork,
-            song titles, Discord presence, or whatever stream of data you want to surface.
-          </div>
-          <div class="widget-placeholder">
-            <span class="widget-placeholder__label">
-              <i class="fa-solid fa-headphones" aria-hidden="true"></i>
-              Waiting for the next track
-            </span>
-            <span>
-              Drop in your widget markup or connect a script to populate this area once your status service is ready.
-              It can expand to fit rich media, album art, or quick status notes.
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <footer>
+      <footer class="page__footer">
         <span>&copy; <span data-current-year>2025</span> Dylan H.</span>
         <span>Built with a sprinkle of anime.js animations.</span>
       </footer>
