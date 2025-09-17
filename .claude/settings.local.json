@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Dylan/Documents/Code/tidal-connection/**)",
+      "Bash(dir \"C:\\Users\\Dylan\\Documents\\Code\\tidal-connection\")",
+      "Bash(pip install:*)",
+      "Bash(set DEBUG_SMTC=1)",
+      "Bash(tasklist)",
+      "Bash(timeout:*)",
+      "WebSearch",
+      "WebFetch(domain:robins.one)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
