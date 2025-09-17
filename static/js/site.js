@@ -216,46 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let updateInterval;
     let isConnected = false;
 
-    const renderHintItems = (items = []) => {
-      if (!widgetHint) return;
-
-      widgetHint.innerHTML = '';
-
-      const validItems = items.filter((item) => item && item.value);
-
-      if (!validItems.length) {
-        widgetHint.textContent = '';
-        return;
-      }
-
-      validItems.forEach(({ icon, label, value }) => {
-        const item = document.createElement('span');
-        item.className = 'widget-shell__hint-item';
-
-        const iconEl = document.createElement('i');
-        iconEl.className = `fa-solid ${icon} fa-fw`;
-        iconEl.setAttribute('aria-hidden', 'true');
-        item.appendChild(iconEl);
-
-        const textWrapper = document.createElement('span');
-        textWrapper.className = 'widget-shell__hint-item-text';
-
-        const labelEl = document.createElement('span');
-        labelEl.className = 'widget-shell__hint-item-label';
-        labelEl.textContent = label;
-        textWrapper.appendChild(labelEl);
-
-        const valueEl = document.createElement('span');
-        valueEl.className = 'widget-shell__hint-item-value';
-        valueEl.textContent = value;
-        textWrapper.appendChild(valueEl);
-
-        item.appendChild(textWrapper);
-
-        widgetHint.appendChild(item);
-      });
-    };
-
     const updateWidget = (activityData) => {
       if (!activityData) return;
 
@@ -297,21 +257,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (widgetLabel) {
         const icon = isPlaying ? 'fa-music' : 'fa-pause';
         const statusText = isPlaying ? 'Now playing' : 'Paused';
-        widgetLabel.innerHTML = `<i class="fa-solid ${icon} fa-lg" aria-hidden="true"></i> ${statusText}`;
+        widgetLabel.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> ${statusText}`;
       }
 
       // Update hint with track info
-      const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
-      const album = musicData.album && musicData.album !== 'Unknown' ? musicData.album : '';
-      const trackDetails = artist ? `${musicData.title} — ${artist}` : musicData.title;
-      const trackInfo = album ? `${trackDetails} • ${album}` : trackDetails;
-      renderHintItems([
-        {
-          icon: isPlaying ? 'fa-music' : 'fa-pause',
-          label: 'Song',
-          value: trackInfo,
-        },
-      ]);
+      if (widgetHint) {
+        const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
+        const album = musicData.album && musicData.album !== 'Unknown' ? musicData.album : '';
+        const trackInfo = [musicData.title, artist, album].filter(Boolean).join(' • ');
+        widgetHint.textContent = trackInfo;
+      }
 
       // Update badge
       if (cardBadge) {
@@ -337,34 +292,19 @@ document.addEventListener('DOMContentLoaded', () => {
       // Update label for game
       if (widgetLabel) {
         const icon = 'fa-gamepad';
-        widgetLabel.innerHTML = `<i class="fa-solid ${icon} fa-lg" aria-hidden="true"></i> In game`;
+        widgetLabel.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> Currently playing`;
       }
 
       // Update hint with game and optional music info
-      const items = [];
-
-      if (musicData && musicData.title && musicData.title !== 'Not Playing') {
-        const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
-        const album = musicData.album && musicData.album !== 'Unknown' ? musicData.album : '';
-        const trackDetails = artist ? `${musicData.title} — ${artist}` : musicData.title;
-        const label = album ? `${trackDetails} • ${album}` : trackDetails;
-
-        items.push({
-          icon: 'fa-music',
-          label: 'Song',
-          value: label,
-        });
+      if (widgetHint) {
+        let hintText = gameData.name;
+        if (musicData && musicData.title && musicData.title !== 'Not Playing') {
+          const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
+          const musicInfo = artist ? `${musicData.title} by ${artist}` : musicData.title;
+          hintText += ` • 🎵 ${musicInfo}`;
+        }
+        widgetHint.textContent = hintText;
       }
-
-      if (gameData && gameData.name) {
-        items.push({
-          icon: 'fa-gamepad',
-          label: 'Game',
-          value: gameData.name,
-        });
-      }
-
-      renderHintItems(items);
 
       // Update badge
       if (cardBadge) {
@@ -382,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update label
       if (widgetLabel) {
-        widgetLabel.innerHTML = '<i class="fa-solid fa-waveform-lines fa-lg" aria-hidden="true"></i> Currently idle';
+        widgetLabel.innerHTML = '<i class="fa-solid fa-waveform-lines" aria-hidden="true"></i>Currently idle';
       }
 
       // Update hint
@@ -406,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update label to show connection status
       if (widgetLabel) {
-        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi fa-lg" aria-hidden="true"></i> Connection lost';
+        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi" aria-hidden="true"></i>Connection lost';
       }
 
       // Update hint
@@ -430,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update label
       if (widgetLabel) {
-        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi fa-lg" aria-hidden="true"></i> Connecting...';
+        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi" aria-hidden="true"></i>Connecting...';
       }
 
       // Update hint
