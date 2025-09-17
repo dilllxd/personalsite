@@ -201,4 +201,196 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // Activity widget functionality (music + games)
+  const initActivityWidget = () => {
+    const widgetCard = document.querySelector('.card--widget');
+    const widgetShell = document.querySelector('.widget-shell');
+    const widgetArtwork = document.querySelector('.widget-shell__artwork');
+    const widgetLabel = document.querySelector('.widget-shell__label');
+    const widgetHint = document.querySelector('.widget-shell__hint');
+    const cardBadge = document.querySelector('.card--widget .card__badge');
+
+    if (!widgetCard || !widgetShell) return;
+
+    let updateInterval;
+    let isConnected = false;
+
+    const updateWidget = (activityData) => {
+      if (!activityData) return;
+
+      const musicData = activityData.music || {};
+      const gameData = activityData.game || {};
+
+      const isMusicPlaying = musicData.status === 'Playing';
+      const hasMusic = musicData.title && musicData.title !== 'Not Playing';
+      const isGamePlaying = gameData.status === 'Playing';
+      const hasGame = gameData.name && gameData.name !== '';
+
+      // Determine what to display based on current activities
+      if (hasMusic && hasGame) {
+        // Both music and game - prioritize game but show music info
+        updateForGame(gameData, musicData);
+      } else if (hasGame) {
+        // Only game
+        updateForGame(gameData);
+      } else if (hasMusic) {
+        // Only music
+        updateForMusic(musicData);
+      } else {
+        // Nothing playing
+        updateForIdle();
+      }
+    };
+
+    const updateForMusic = (musicData) => {
+      const isPlaying = musicData.status === 'Playing';
+
+      // Update artwork
+      if (musicData.artUrl && widgetArtwork) {
+        widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
+        widgetArtwork.style.backgroundSize = 'cover';
+        widgetArtwork.style.backgroundPosition = 'center';
+      }
+
+      // Update label
+      if (widgetLabel) {
+        const icon = isPlaying ? 'fa-music' : 'fa-pause';
+        const statusText = isPlaying ? 'Now playing' : 'Paused';
+        widgetLabel.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> ${statusText}`;
+      }
+
+      // Update hint with track info
+      if (widgetHint) {
+        const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
+        const album = musicData.album && musicData.album !== 'Unknown' ? musicData.album : '';
+        const trackInfo = [musicData.title, artist, album].filter(Boolean).join(' • ');
+        widgetHint.textContent = trackInfo;
+      }
+
+      // Update badge
+      if (cardBadge) {
+        cardBadge.textContent = 'Live';
+        cardBadge.style.backgroundColor = isPlaying ? '#10b981' : '#f59e0b';
+      }
+    };
+
+    const updateForGame = (gameData, musicData = null) => {
+      // Clear artwork for games (or keep music artwork if both)
+      if (widgetArtwork) {
+        if (musicData && musicData.artUrl) {
+          widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
+          widgetArtwork.style.backgroundSize = 'cover';
+          widgetArtwork.style.backgroundPosition = 'center';
+          widgetArtwork.style.opacity = '0.3'; // Dim the music artwork
+        } else {
+          widgetArtwork.style.backgroundImage = '';
+          widgetArtwork.style.opacity = '1';
+        }
+      }
+
+      // Update label for game
+      if (widgetLabel) {
+        const icon = 'fa-gamepad';
+        widgetLabel.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i> Currently playing`;
+      }
+
+      // Update hint with game and optional music info
+      if (widgetHint) {
+        let hintText = gameData.name;
+        if (musicData && musicData.title && musicData.title !== 'Not Playing') {
+          const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
+          const musicInfo = artist ? `${musicData.title} by ${artist}` : musicData.title;
+          hintText += ` • 🎵 ${musicInfo}`;
+        }
+        widgetHint.textContent = hintText;
+      }
+
+      // Update badge
+      if (cardBadge) {
+        cardBadge.textContent = 'Gaming';
+        cardBadge.style.backgroundColor = '#8b5cf6'; // Purple for gaming
+      }
+    };
+
+    const updateForIdle = () => {
+      // Clear artwork
+      if (widgetArtwork) {
+        widgetArtwork.style.backgroundImage = '';
+        widgetArtwork.style.opacity = '1';
+      }
+
+      // Update label
+      if (widgetLabel) {
+        widgetLabel.innerHTML = '<i class="fa-solid fa-waveform-lines" aria-hidden="true"></i> Currently idle';
+      }
+
+      // Update hint
+      if (widgetHint) {
+        widgetHint.textContent = 'No music or games currently active. Start something to see it here.';
+      }
+
+      // Update badge
+      if (cardBadge) {
+        cardBadge.textContent = 'Idle';
+        cardBadge.style.backgroundColor = '#6b7280'; // Gray for idle
+      }
+    };
+
+    const fetchActivityData = async () => {
+      try {
+        const response = await fetch('https://rpc.dylan.lol/website');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        updateWidget(data);
+
+        // Update connection status
+        if (!isConnected) {
+          isConnected = true;
+          console.log('Connected to activity API');
+        }
+
+      } catch (error) {
+        console.error('Failed to fetch activity data:', error);
+        isConnected = false;
+
+        // Show connection error
+        if (cardBadge) {
+          cardBadge.textContent = 'Offline';
+          cardBadge.style.backgroundColor = '#ef4444';
+        }
+      }
+    };
+
+    // Start polling for activity data
+    const startPolling = () => {
+      // Initial fetch
+      fetchActivityData();
+
+      // Poll every 3 seconds
+      updateInterval = setInterval(fetchActivityData, 3000);
+    };
+
+    // Stop polling
+    const stopPolling = () => {
+      if (updateInterval) {
+        clearInterval(updateInterval);
+        updateInterval = null;
+      }
+    };
+
+    // Start the polling
+    startPolling();
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      stopPolling();
+    });
+  };
+
+  // Initialize activity widget
+  initActivityWidget();
 });
