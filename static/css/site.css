@@ -542,57 +542,20 @@ button {
 .widget-shell__label {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   font-weight: 600;
   font-size: 0.9rem;
 }
 
 .widget-shell__label i {
   color: var(--accent);
-  font-size: 1.35rem;
+  font-size: 1.1rem;
 }
 
 .widget-shell__hint {
   color: var(--text-muted);
   font-size: 0.8rem;
   line-height: 1.4;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.widget-shell__hint-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.widget-shell__hint-item i {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-.widget-shell__hint-item-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.widget-shell__hint-item-label {
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.widget-shell__hint-item-label::after {
-  content: ':';
-  margin-left: 0.2rem;
-}
-
-.widget-shell__hint-item-value {
-  color: var(--text-primary);
-  font-weight: 500;
 }
 
 .site__footer {
