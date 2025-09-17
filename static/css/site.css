@@ -501,18 +501,18 @@ button {
 .widget-shell {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.8rem;
+  gap: 1.2rem;
   align-items: center;
-  padding: 0.7rem 0.8rem;
+  padding: 1.2rem 1.4rem;
   border-radius: var(--radius-md);
   border: 1px dashed var(--border-strong);
   background: var(--surface-alt);
 }
 
 .widget-shell__artwork {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
   background: var(--accent-soft);
   border: 1px solid var(--border);
   position: relative;

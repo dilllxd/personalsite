@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update label
       if (widgetLabel) {
-        widgetLabel.innerHTML = '<i class="fa-solid fa-waveform-lines" aria-hidden="true"></i> Currently idle';
+        widgetLabel.innerHTML = '<i class="fa-solid fa-waveform-lines" aria-hidden="true"></i>Currently idle';
       }
 
       // Update hint
@@ -330,10 +330,58 @@ document.addEventListener('DOMContentLoaded', () => {
         widgetHint.textContent = 'No music or games currently active. Start something to see it here.';
       }
 
+      // Update badge - keep it simple
+      if (cardBadge) {
+        cardBadge.textContent = 'Live';
+        cardBadge.style.backgroundColor = '#6b7280'; // Gray for idle
+      }
+    };
+
+    const updateForConnectionError = () => {
+      // Clear artwork
+      if (widgetArtwork) {
+        widgetArtwork.style.backgroundImage = '';
+        widgetArtwork.style.opacity = '1';
+      }
+
+      // Update label to show connection status
+      if (widgetLabel) {
+        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi" aria-hidden="true"></i>Connection lost';
+      }
+
+      // Update hint
+      if (widgetHint) {
+        widgetHint.textContent = 'Unable to connect to activity service. Retrying...';
+      }
+
       // Update badge
       if (cardBadge) {
-        cardBadge.textContent = 'Idle';
-        cardBadge.style.backgroundColor = '#6b7280'; // Gray for idle
+        cardBadge.textContent = 'Reconnecting';
+        cardBadge.style.backgroundColor = '#f59e0b'; // Orange for connection issues
+      }
+    };
+
+    const updateForConnecting = () => {
+      // Clear artwork
+      if (widgetArtwork) {
+        widgetArtwork.style.backgroundImage = '';
+        widgetArtwork.style.opacity = '1';
+      }
+
+      // Update label
+      if (widgetLabel) {
+        widgetLabel.innerHTML = '<i class="fa-solid fa-wifi" aria-hidden="true"></i>Connecting...';
+      }
+
+      // Update hint
+      if (widgetHint) {
+        widgetHint.textContent = 'Establishing connection to activity service.';
+      }
+
+      // Update badge
+      if (cardBadge) {
+        cardBadge.textContent = 'Connecting';
+        cardBadge.style.backgroundColor = '#3b82f6'; // Blue for connecting
       }
     };
 
@@ -357,11 +405,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Failed to fetch activity data:', error);
         isConnected = false;
 
-        // Show connection error
-        if (cardBadge) {
-          cardBadge.textContent = 'Offline';
-          cardBadge.style.backgroundColor = '#ef4444';
-        }
+        // Show connection error in widget content
+        updateForConnectionError();
       }
     };
 
