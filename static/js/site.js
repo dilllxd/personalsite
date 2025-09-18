@@ -295,6 +295,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
+    const setLabelWithSubtext = (iconName, text, subtext) => {
+      if (!widgetLabel) return;
+      widgetLabel.innerHTML = '';
+      widgetLabel.className = 'widget-shell__label widget-shell__label--with-subtext';
+
+      const mainRow = document.createElement('div');
+      mainRow.className = 'widget-shell__label-main';
+      widgetLabel.appendChild(mainRow);
+
+      if (iconName) {
+        const iconEl = document.createElement('i');
+        iconEl.setAttribute('data-lucide', iconName);
+        iconEl.setAttribute('aria-hidden', 'true');
+        mainRow.appendChild(iconEl);
+      }
+
+      const { content, shouldMultiline } = createMultilineText(text);
+      const textEl = document.createElement('span');
+      textEl.className = shouldMultiline ? 'widget-shell__label-text widget-shell__label-text--multiline' : 'widget-shell__label-text';
+      textEl.textContent = content;
+      mainRow.appendChild(textEl);
+
+      if (subtext) {
+        const subtextEl = document.createElement('div');
+        subtextEl.className = 'widget-shell__label-subtext';
+        subtextEl.textContent = subtext;
+        widgetLabel.appendChild(subtextEl);
+      }
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    };
+
     const setBadge = (text, color) => {
       if (!cardBadge) return;
       cardBadge.textContent = text;
@@ -630,22 +664,24 @@ document.addEventListener('DOMContentLoaded', () => {
       // Show dual labels for game + music or single label for game only
       if (hasMusic) {
         const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
-        setDualLabels('gamepad-2', gameName, 'music', artist);
+        const playtime = calculatePlaytime(gameData.start_time);
+        const playtimeText = playtime ? `Playing for ${playtime}` : '';
+        setLabelWithSubtext('gamepad-2', gameName, playtimeText);
 
-        // Show song title and playtime when playing both
         const hintLines = [];
+        if (artist) {
+          hintLines.push({ icon: null, text: artist });
+        }
+
         const trackLine = getTrackLine(musicData);
         if (trackLine) {
           hintLines.push({ icon: 'music-2', text: trackLine });
         }
 
-        const playtime = calculatePlaytime(gameData.start_time);
-        if (playtime) {
-          hintLines.push({ icon: 'timer', text: `Playing for ${playtime}` });
-        }
-
         if (hintLines.length > 0) {
           renderHintLines(hintLines);
+        } else if (playtimeText) {
+          renderHintLines([], playtimeText);
         } else {
           const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
           renderHintLines([], title);

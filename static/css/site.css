@@ -621,6 +621,18 @@ button {
   overflow: hidden;
 }
 
+.widget-shell__label--with-subtext {
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.widget-shell__label-main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
 .widget-shell__label i {
   color: var(--accent);
   width: 1.35rem;
@@ -647,6 +659,13 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
+}
+
+.widget-shell__label-subtext {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 
