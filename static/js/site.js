@@ -329,6 +329,44 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
+    const setStackedLabelItems = (items = []) => {
+      if (!widgetLabel) return;
+
+      const validItems = Array.isArray(items)
+        ? items.filter((item) => item && (item.title || item.hint))
+        : [];
+
+      if (!validItems.length) {
+        widgetLabel.innerHTML = '';
+        widgetLabel.className = 'widget-shell__label';
+        return;
+      }
+
+      widgetLabel.innerHTML = '';
+      widgetLabel.className = 'widget-shell__label widget-shell__label--stacked';
+
+      validItems.forEach(({ title, hint }) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'widget-shell__stacked-item';
+
+        if (title) {
+          const titleEl = document.createElement('span');
+          titleEl.className = 'widget-shell__stacked-title';
+          titleEl.textContent = title;
+          itemEl.appendChild(titleEl);
+        }
+
+        if (hint) {
+          const hintEl = document.createElement('span');
+          hintEl.className = 'widget-shell__stacked-hint';
+          hintEl.textContent = hint;
+          itemEl.appendChild(hintEl);
+        }
+
+        widgetLabel.appendChild(itemEl);
+      });
+    };
+
     const setBadge = (text, color) => {
       if (!cardBadge) return;
       cardBadge.textContent = text;
@@ -516,13 +554,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
-      const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
+      const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : '';
+      const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : '';
+      const trackLine = getTrackLine(musicData);
 
-      setLabel('music', artist);
+      const labelTitle = artist || title || 'Unknown Artist';
+      const labelHint = trackLine || title || null;
 
-      // Show song title as hint
-      renderHintLines([], title);
+      setStackedLabelItems([
+        {
+          title: labelTitle,
+          hint: labelHint
+        }
+      ]);
+
+      // Clear hint area when using stacked labels
+      renderHintLines([]);
 
       // Update badge
       setBadge('Listening', '#10b981');
@@ -666,26 +713,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
         const playtime = calculatePlaytime(gameData.start_time);
         const playtimeText = playtime ? `Playing for ${playtime}` : '';
-        setLabelWithSubtext('gamepad-2', gameName, playtimeText);
-
-        const hintLines = [];
-        if (artist) {
-          hintLines.push({ icon: null, text: artist });
-        }
-
         const trackLine = getTrackLine(musicData);
-        if (trackLine) {
-          hintLines.push({ icon: 'music-2', text: trackLine });
+
+        const stackedItems = [];
+        stackedItems.push({
+          title: gameName,
+          hint: playtimeText || null
+        });
+
+        if (artist || trackLine) {
+          stackedItems.push({
+            title: artist || null,
+            hint: trackLine || null
+          });
         }
 
-        if (hintLines.length > 0) {
-          renderHintLines(hintLines);
-        } else if (playtimeText) {
-          renderHintLines([], playtimeText);
-        } else {
-          const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
-          renderHintLines([], title);
-        }
+        setStackedLabelItems(stackedItems);
+        renderHintLines([]);
       } else {
         setLabel('gamepad-2', gameName);
 
