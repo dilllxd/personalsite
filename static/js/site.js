@@ -313,8 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculatePlaytime = (startTime) => {
       if (!startTime) return null;
 
+      const numericStart = Number(startTime);
+      if (!Number.isFinite(numericStart)) return null;
+
+      // Some providers return milliseconds instead of seconds.
+      const startInSeconds = numericStart > 1e12 ? Math.floor(numericStart / 1000) : numericStart;
+
       const now = Math.floor(Date.now() / 1000); // Current time in seconds
-      const elapsed = now - startTime; // Elapsed time in seconds
+      const elapsed = Math.floor(Math.max(0, now - startInSeconds)); // Clamp to avoid negative durations
 
       if (elapsed < 60) {
         return `${elapsed}s`;
