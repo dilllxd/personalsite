@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]);
 
       if (contextualInfo.length) {
-        lines.push({ icon: 'fa-circle-info', text: contextualInfo.join(' • ') });
+        lines.push({ icon: 'fa-circle-info', text: contextualInfo.join(' - ') });
       }
 
       return lines;
