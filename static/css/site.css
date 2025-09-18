@@ -539,6 +539,8 @@ button {
 .widget-shell__artwork {
   width: 128px;
   height: 128px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 24px;
   background: var(--accent-soft);
   border: 1px solid var(--border);
@@ -565,7 +567,8 @@ button {
   flex-direction: column;
   gap: 0.25rem;
   align-items: center;
-  justify-content: center;\n  position: relative;
+  justify-content: center;
+  position: relative;
   text-align: center;
   min-width: 0;
   flex: 1;
@@ -659,7 +662,10 @@ button {
   gap: 0.35rem;
   align-items: center;
   text-align: center;
-  min-height: 2.4rem;\n  max-height: 2.4rem;\n  overflow: hidden;\n  justify-content: flex-start;
+  min-height: 2.4rem;
+  max-height: 2.4rem;
+  overflow: hidden;
+  justify-content: flex-start;
 }
 
 /* Hide hint when empty but keep the space for proper centering */
@@ -687,7 +693,7 @@ button {
   min-height: 1.1rem;
   text-align: center;
 }
-\n
+
 
 .widget-shell__hint-line i {
   color: var(--text-muted);
@@ -703,7 +709,7 @@ button {
   width: 100%;
   height: 100%;
 }
-\n
+
 
 .widget-shell__hint-line span:last-child {
   flex: 1;
@@ -714,7 +720,7 @@ button {
   white-space: nowrap;
   max-width: 100%;
 }
-\n
+
 
 .site__footer {
   padding-top: 0.5rem;
@@ -1073,16 +1079,18 @@ button {
   .widget-shell {
     grid-template-columns: 1fr;
     gap: 1rem;
+    justify-items: center;
   }
 
   .widget-shell__artwork {
-    width: 100%;
-    height: 80px;
+    width: min(160px, 70vw);
+    height: auto;
     justify-self: center;
   }
 
   .widget-shell__meta {
     gap: 0.6rem;
+    width: 100%;
   }
 
   .widget-shell__meta--with-hint {
