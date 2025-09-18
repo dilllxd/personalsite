@@ -632,9 +632,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
         setDualLabels('gamepad-2', gameName, 'music', artist);
 
-        // Show song title as hint when playing both
-        const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
-        renderHintLines([], title);
+        // Show song title and playtime when playing both
+        const hintLines = [];
+        const trackLine = getTrackLine(musicData);
+        if (trackLine) {
+          hintLines.push({ icon: 'music-2', text: trackLine });
+        }
+
+        const playtime = calculatePlaytime(gameData.start_time);
+        if (playtime) {
+          hintLines.push({ icon: 'timer', text: `Playing for ${playtime}` });
+        }
+
+        if (hintLines.length > 0) {
+          renderHintLines(hintLines);
+        } else {
+          const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
+          renderHintLines([], title);
+        }
       } else {
         setLabel('gamepad-2', gameName);
 
