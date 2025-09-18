@@ -345,26 +345,45 @@ document.addEventListener('DOMContentLoaded', () => {
       widgetLabel.innerHTML = '';
       widgetLabel.className = 'widget-shell__label widget-shell__label--stacked';
 
-      validItems.forEach(({ title, hint }) => {
+      validItems.forEach(({ icon, title, hint }) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'widget-shell__stacked-item';
+
+        if (icon) {
+          const iconEl = document.createElement('i');
+          iconEl.setAttribute('data-lucide', icon);
+          iconEl.setAttribute('aria-hidden', 'true');
+          iconEl.className = 'widget-shell__stacked-icon';
+          itemEl.appendChild(iconEl);
+        }
+
+        const textWrapper = document.createElement('div');
+        textWrapper.className = 'widget-shell__stacked-text';
 
         if (title) {
           const titleEl = document.createElement('span');
           titleEl.className = 'widget-shell__stacked-title';
           titleEl.textContent = title;
-          itemEl.appendChild(titleEl);
+          textWrapper.appendChild(titleEl);
         }
 
         if (hint) {
           const hintEl = document.createElement('span');
           hintEl.className = 'widget-shell__stacked-hint';
           hintEl.textContent = hint;
-          itemEl.appendChild(hintEl);
+          textWrapper.appendChild(hintEl);
+        }
+
+        if (textWrapper.childElementCount) {
+          itemEl.appendChild(textWrapper);
         }
 
         widgetLabel.appendChild(itemEl);
       });
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     };
 
     const setBadge = (text, color) => {
@@ -563,6 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setStackedLabelItems([
         {
+          icon: 'music-2',
           title: labelTitle,
           hint: labelHint
         }
@@ -717,12 +737,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const stackedItems = [];
         stackedItems.push({
+          icon: 'gamepad-2',
           title: gameName,
           hint: playtimeText || null
         });
 
         if (artist || trackLine) {
           stackedItems.push({
+            icon: 'music-2',
             title: artist || null,
             hint: trackLine || null
           });
