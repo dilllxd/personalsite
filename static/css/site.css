@@ -355,7 +355,16 @@ button {
   justify-content: center;
   width: 1.3rem;
   height: 1.3rem;
-  font-size: 1rem;
+}
+
+.button__icon i {
+  width: 1rem;
+  height: 1rem;
+}
+
+.button__icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .button--primary {
@@ -461,7 +470,16 @@ button {
   justify-content: center;
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 1.1rem;
+}
+
+.link-card__icon i {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.link-card__icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .link-card__body {
@@ -485,7 +503,16 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+}
+
+.link-card__arrow i {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.link-card__arrow svg {
+  width: 100%;
+  height: 100%;
 }
 
 .link-card:hover {
@@ -503,7 +530,7 @@ button {
   grid-template-columns: auto 1fr;
   gap: 1.4rem;
   align-items: center;
-  padding: 1.2rem 1.4rem;
+  padding: 1.2rem 1rem;
   border-radius: var(--radius-md);
   border: 1px dashed var(--border-strong);
   background: var(--surface-alt);
@@ -536,25 +563,92 @@ button {
 .widget-shell__meta {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;\n  position: relative;
+  text-align: center;
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+}
+
+/* When hint has content, position label and hint closer together */
+.widget-shell__meta--with-hint {
+  justify-content: center !important;
+  gap: 0 !important;
+  align-items: center !important;
+}
+
+.widget-shell__meta--with-hint .widget-shell__label,
+.widget-shell__meta--with-hint .widget-shell__hint {
+  flex: 0 0 auto !important;
+}
+
+.widget-shell__meta--with-hint .widget-shell__label {
+  margin: 0 !important;
+  min-height: auto !important;
+  padding: 0 !important;
+}
+
+.widget-shell__meta.widget-shell__meta--with-hint .widget-shell__hint {
+  margin: 0 !important;
+  min-height: auto !important;
+  max-height: none !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: block !important;
+  flex-direction: unset !important;
+  justify-content: unset !important;
+}
+
+/* When hint is empty, center the label better */
+.widget-shell__meta:has(.widget-shell__hint:empty) .widget-shell__label,
+.widget-shell__meta .widget-shell__hint:empty + .widget-shell__label {
+  margin: auto;
 }
 
 .widget-shell__label {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  justify-content: center;
+  gap: 0.25rem;
   font-weight: 600;
   font-size: 0.9rem;
+  min-height: 1.6rem;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .widget-shell__label i {
   color: var(--accent);
-  font-size: 1.35rem;
-  width: 1.6rem;
-  display: flex;
+  width: 1.35rem;
+  height: 1.35rem;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 }
+
+.widget-shell__label i svg {
+  width: 100%;
+  height: 100%;
+}
+
+.widget-shell__label-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
 
 .widget-shell__hint {
   color: var(--text-muted);
@@ -563,28 +657,64 @@ button {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  align-items: center;
+  text-align: center;
+  min-height: 2.4rem;\n  max-height: 2.4rem;\n  overflow: hidden;\n  justify-content: flex-start;
+}
+
+/* Hide hint when empty but keep the space for proper centering */
+.widget-shell__hint:empty {
+  display: none;
+}
+
+/* Alternative approach: when there's no hint content, center the label */
+.widget-shell__meta:not(:has(.widget-shell__hint-line)) {
+  justify-content: center;
+}
+
+.widget-shell__meta:not(:has(.widget-shell__hint-line)) .widget-shell__label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .widget-shell__hint-line {
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-height: 1.1rem;
+  text-align: center;
 }
+\n
 
 .widget-shell__hint-line i {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  width: 1.4rem;
-  display: flex;
+  width: 0.9rem;
+  height: 0.9rem;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
 }
 
-.widget-shell__hint-line span:last-child {
-  flex: 1 1 auto;
-  min-width: 0;
+.widget-shell__hint-line i svg {
+  width: 100%;
+  height: 100%;
 }
+\n
+
+.widget-shell__hint-line span:last-child {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+\n
 
 .site__footer {
   padding-top: 0.5rem;
@@ -622,6 +752,16 @@ button {
   justify-content: center;
   width: 1.2rem;
   height: 1.2rem;
+}
+
+.theme-toggle__icon i {
+  width: 1rem;
+  height: 1rem;
+}
+
+.theme-toggle__icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 [data-animate] {
@@ -718,6 +858,58 @@ button {
   50% {
     transform: scale(1.05);
     opacity: 0.4;
+  }
+}
+
+/* Animation elements for widget states */
+.idle-animation,
+.music-animation,
+.game-animation {
+  border-radius: 24px;
+}
+
+.idle-animation {
+  animation: idlePulse 4s ease-in-out infinite;
+}
+
+.music-animation {
+  animation: musicFlow 3s ease-in-out infinite alternate;
+}
+
+.game-animation {
+  animation: gameGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes idlePulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes musicFlow {
+  0% {
+    opacity: 0.4;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1.03) rotate(1deg);
+  }
+}
+
+@keyframes gameGlow {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1.05);
   }
 }
 
@@ -880,11 +1072,35 @@ button {
 
   .widget-shell {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .widget-shell__artwork {
     width: 100%;
     height: 80px;
+    justify-self: center;
+  }
+
+  .widget-shell__meta {
+    gap: 0.6rem;
+  }
+
+  .widget-shell__meta--with-hint {
+    gap: 0.1rem !important;
+  }
+
+  .widget-shell__label {
+    font-size: 0.85rem;
+    gap: 0.3rem;
+  }
+
+  .widget-shell__label i {
+    font-size: 1.2rem;
+    width: 1.4rem;
+  }
+
+  .widget-shell__hint {
+    font-size: 0.8rem;
   }
 
   .hero__aside {
@@ -950,4 +1166,92 @@ button {
     position: relative;
     z-index: 10;
   }
+}
+
+
+
+/* Perfect centering when there's no hint content */
+.widget-shell__meta--no-hint {
+  justify-content: center !important;
+  gap: 0 !important;
+}
+
+.widget-shell__meta--no-hint .widget-shell__label {
+  margin: 0;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dual label layout for game + music */
+.widget-shell__label--dual {
+  flex-direction: column !important;
+  gap: 0.3rem !important;
+  align-items: center !important;
+}
+
+.widget-shell__label-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.widget-shell__label-item i {
+  color: var(--accent);
+  width: 1.1rem;
+  height: 1.1rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.widget-shell__label-item i svg {
+  width: 100%;
+  height: 100%;
+}
+
+.widget-shell__label-item .widget-shell__label-text {
+  font-size: 0.85rem;
+  max-width: 100%;
+}
+
+/* Mobile adjustments for dual labels */
+@media (max-width: 720px) {
+  .widget-shell__label--dual {
+    gap: 0.2rem !important;
+  }
+
+  .widget-shell__label-item {
+    font-size: 0.8rem;
+    gap: 0.3rem;
+  }
+
+  .widget-shell__label-item i {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .widget-shell__label-item .widget-shell__label-text {
+    font-size: 0.8rem;
+  }
+}
+
+/* Multi-line text for long content */
+.widget-shell__label-text--multiline {
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: center;
+  line-height: 1.3;
+  max-height: 3.9em; /* Allow up to 3 lines */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }

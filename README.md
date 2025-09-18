@@ -1,3 +1,7 @@
 # Dylan's Personal Site
 
 Welcome to my website repository. This houses/hosts the code that powers my personal site.
+
+
+TODO:
+1. keep playtime when listening to music and playing game, it's removed if you do both.

@@ -39,8 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (themeToggleIcon) {
-      themeToggleIcon.classList.remove('fa-sun', 'fa-moon');
-      themeToggleIcon.classList.add(normalizedTheme === 'light' ? 'fa-moon' : 'fa-sun');
+      themeToggleIcon.setAttribute('data-lucide', normalizedTheme === 'light' ? 'moon' : 'sun');
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     }
   };
 
@@ -216,9 +218,81 @@ document.addEventListener('DOMContentLoaded', () => {
     let updateInterval;
     let isConnected = false;
 
-    const setLabel = (iconClass, text) => {
+    let lastGameName = null;
+    let cachedGameArtworkUrl = null;
+
+    const resetGameArtworkCache = () => {
+      lastGameName = null;
+      cachedGameArtworkUrl = null;
+    };
+
+    const setLabel = (iconName, text) => {
       if (!widgetLabel) return;
-      widgetLabel.innerHTML = `<i class="fa-solid ${iconClass}" aria-hidden="true"></i> ${text}`;
+      widgetLabel.innerHTML = '';
+      widgetLabel.className = 'widget-shell__label';
+
+      if (iconName) {
+        const iconEl = document.createElement('i');
+        iconEl.setAttribute('data-lucide', iconName);
+        iconEl.setAttribute('aria-hidden', 'true');
+        widgetLabel.appendChild(iconEl);
+      }
+
+      const { content, shouldMultiline } = createMultilineText(text);
+      const textEl = document.createElement('span');
+      textEl.className = shouldMultiline ? 'widget-shell__label-text widget-shell__label-text--multiline' : 'widget-shell__label-text';
+      textEl.textContent = content;
+
+      widgetLabel.appendChild(textEl);
+
+      // Reinitialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    };
+
+    const setDualLabels = (gameIcon, gameText, musicIcon, musicText) => {
+      if (!widgetLabel) return;
+      widgetLabel.innerHTML = '';
+      widgetLabel.className = 'widget-shell__label widget-shell__label--dual';
+
+      // Game label
+      const gameLabel = document.createElement('div');
+      gameLabel.className = 'widget-shell__label-item';
+
+      const gameIconEl = document.createElement('i');
+      gameIconEl.setAttribute('data-lucide', gameIcon);
+      gameIconEl.setAttribute('aria-hidden', 'true');
+      gameLabel.appendChild(gameIconEl);
+
+      const { content: gameContent, shouldMultiline: gameMultiline } = createMultilineText(gameText);
+      const gameTextEl = document.createElement('span');
+      gameTextEl.className = gameMultiline ? 'widget-shell__label-text widget-shell__label-text--multiline' : 'widget-shell__label-text';
+      gameTextEl.textContent = gameContent;
+      gameLabel.appendChild(gameTextEl);
+
+      // Music label
+      const musicLabel = document.createElement('div');
+      musicLabel.className = 'widget-shell__label-item';
+
+      const musicIconEl = document.createElement('i');
+      musicIconEl.setAttribute('data-lucide', musicIcon);
+      musicIconEl.setAttribute('aria-hidden', 'true');
+      musicLabel.appendChild(musicIconEl);
+
+      const { content: musicContent, shouldMultiline: musicMultiline } = createMultilineText(musicText);
+      const musicTextEl = document.createElement('span');
+      musicTextEl.className = musicMultiline ? 'widget-shell__label-text widget-shell__label-text--multiline' : 'widget-shell__label-text';
+      musicTextEl.textContent = musicContent;
+      musicLabel.appendChild(musicTextEl);
+
+      widgetLabel.appendChild(gameLabel);
+      widgetLabel.appendChild(musicLabel);
+
+      // Reinitialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     };
 
     const setBadge = (text, color) => {
@@ -227,9 +301,54 @@ document.addEventListener('DOMContentLoaded', () => {
       cardBadge.style.backgroundColor = color;
     };
 
+    const createMultilineText = (text, maxLength = 30) => {
+      if (!text) return { content: '', shouldMultiline: false };
+      const shouldMultiline = text.length > maxLength;
+      return {
+        content: text,
+        shouldMultiline
+      };
+    };
+
+    const calculatePlaytime = (startTime) => {
+      if (!startTime) return null;
+
+      const now = Math.floor(Date.now() / 1000); // Current time in seconds
+      const elapsed = now - startTime; // Elapsed time in seconds
+
+      if (elapsed < 60) {
+        return `${elapsed}s`;
+      } else if (elapsed < 3600) {
+        const minutes = Math.floor(elapsed / 60);
+        return `${minutes}m`;
+      } else {
+        const hours = Math.floor(elapsed / 3600);
+        const minutes = Math.floor((elapsed % 3600) / 60);
+        return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
+      }
+    };
+
     const renderHintLines = (lines = [], fallbackText = '') => {
       if (!widgetHint) return;
       widgetHint.innerHTML = '';
+
+      // Get the meta container to add/remove centering class
+      const metaContainer = document.querySelector('.widget-shell__meta');
+
+      if (!lines.length && !fallbackText) {
+        // No hint content - add centering class
+        if (metaContainer) {
+          metaContainer.classList.add('widget-shell__meta--no-hint');
+          metaContainer.classList.remove('widget-shell__meta--with-hint');
+        }
+        return;
+      }
+
+      // Has hint content - add with-hint class and remove no-hint class
+      if (metaContainer) {
+        metaContainer.classList.remove('widget-shell__meta--no-hint');
+        metaContainer.classList.add('widget-shell__meta--with-hint');
+      }
 
       if (!lines.length) {
         widgetHint.textContent = fallbackText;
@@ -243,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (icon) {
           const iconEl = document.createElement('i');
-          iconEl.className = `fa-solid ${icon}`;
+          iconEl.setAttribute('data-lucide', icon);
           iconEl.setAttribute('aria-hidden', 'true');
           line.appendChild(iconEl);
         }
@@ -254,6 +373,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         widgetHint.appendChild(line);
       });
+
+      // Reinitialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     };
 
     const getTrackLine = (musicData) => {
@@ -262,22 +386,23 @@ document.addEventListener('DOMContentLoaded', () => {
       return [title, artist].filter(Boolean).join(' — ');
     };
 
-    const updateWidget = (activityData) => {
+    const updateWidget = async (activityData) => {
       if (!activityData) return;
 
       const musicData = activityData.music || {};
       const gameData = activityData.game || {};
 
-      const hasMusic = musicData.title && musicData.title !== 'Not Playing';
+      const isMusicPlaying = musicData.status === 'Playing';
+      const hasMusic = isMusicPlaying && musicData.title && musicData.title !== 'Not Playing';
       const hasGame = gameData.name && gameData.name !== '';
 
       // Determine what to display based on current activities
       if (hasMusic && hasGame) {
         // Both music and game - prioritize game but show music info
-        updateForGame(gameData, musicData);
+        await updateForGame(gameData, musicData);
       } else if (hasGame) {
         // Only game
-        updateForGame(gameData);
+        await updateForGame(gameData);
       } else if (hasMusic) {
         // Only music
         updateForMusic(musicData);
@@ -288,110 +413,317 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateForMusic = (musicData) => {
+      resetGameArtworkCache();
+
       const isPlaying = musicData.status === 'Playing';
+
+      if (!isPlaying) {
+        updateForIdle();
+        return;
+      }
 
       // Update artwork
       if (musicData.artUrl && widgetArtwork) {
         widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
         widgetArtwork.style.backgroundSize = 'cover';
         widgetArtwork.style.backgroundPosition = 'center';
+        widgetArtwork.style.backgroundColor = '';
         widgetArtwork.style.opacity = '1';
+        widgetArtwork.innerHTML = '';
       } else if (widgetArtwork) {
+        // Add music-themed animated fallback
         widgetArtwork.style.backgroundImage = '';
+        widgetArtwork.style.backgroundColor = 'var(--accent-soft)';
         widgetArtwork.style.opacity = '1';
-      }
 
-      // Update label
-      const icon = isPlaying ? 'fa-music' : 'fa-pause';
-      const statusText = isPlaying ? 'Listening to music' : 'Music paused';
-      setLabel(icon, statusText);
+        if (typeof anime !== 'undefined') {
+          widgetArtwork.innerHTML = `
+            <div class="music-animation">
+              <div class="music-wave music-wave-1"></div>
+              <div class="music-wave music-wave-2"></div>
+              <div class="music-wave music-wave-3"></div>
+              <div class="music-wave music-wave-4"></div>
+            </div>
+          `;
+          const musicContainer = widgetArtwork.querySelector('.music-animation');
+          if (musicContainer) {
+            musicContainer.style.cssText = `
+              position: absolute;
+              inset: 0;
+              display: flex;
+              align-items: end;
+              justify-content: center;
+              gap: 4px;
+              padding: 20px;
+              border-radius: 24px;
+            `;
 
-      // Update hint with track info
-      const trackLine = getTrackLine(musicData);
-      const album = musicData.album && musicData.album !== 'Unknown' ? musicData.album : '';
-      const hintLines = [];
+            const waves = widgetArtwork.querySelectorAll('.music-wave');
+            waves.forEach((wave, index) => {
+              wave.style.cssText = `
+                width: 6px;
+                height: ${20 + index * 8}px;
+                background: linear-gradient(to top,
+                  rgba(16,185,129,0.6),
+                  rgba(6,182,212,0.4));
+                border-radius: 3px;
+              `;
 
-      if (trackLine) {
-        hintLines.push({ icon, text: trackLine });
-      }
-
-      if (album && album !== musicData.title) {
-        hintLines.push({ icon: 'fa-compact-disc', text: album });
-      }
-
-      renderHintLines(hintLines, 'Music details unavailable.');
-
-      // Update badge
-      setBadge(isPlaying ? 'Listening' : 'Music paused', isPlaying ? '#10b981' : '#f59e0b');
-    };
-
-    const updateForGame = (gameData, musicData = null) => {
-      // Clear artwork for games (or keep music artwork if both)
-      if (widgetArtwork) {
-        if (musicData && musicData.artUrl) {
-          widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
-          widgetArtwork.style.backgroundSize = 'cover';
-          widgetArtwork.style.backgroundPosition = 'center';
-          widgetArtwork.style.opacity = '0.45'; // Dim the music artwork
-        } else {
-          widgetArtwork.style.backgroundImage = '';
-          widgetArtwork.style.opacity = '1';
+              anime({
+                targets: wave,
+                scaleY: [0.3, 1, 0.8, 1, 0.5],
+                duration: () => anime.random(800, 1500),
+                delay: index * 150,
+                easing: 'easeInOutSine',
+                loop: true
+              });
+            });
+          }
         }
       }
 
-      // Update label for game
-      const gameName = gameData.name && gameData.name !== '' ? gameData.name : 'In game';
-      const hasMusic =
-        musicData && musicData.title && musicData.title !== 'Not Playing';
-      const musicPlaying = hasMusic && musicData.status === 'Playing';
-      const labelIcon = hasMusic ? 'fa-headset' : 'fa-gamepad';
-      const labelText = hasMusic
-        ? musicPlaying
-          ? 'Gaming with music'
-          : 'Gaming (music paused)'
-        : `Playing ${gameName}`;
+      const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
+      const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
 
-      setLabel(labelIcon, labelText);
+      setLabel('music', artist);
 
-      // Update hint with game and optional music info
-      const hintLines = [];
-
-      if (gameName) {
-        hintLines.push({ icon: 'fa-gamepad', text: gameName });
-      }
-
-      if (hasMusic) {
-        const musicLine = getTrackLine(musicData);
-        const prefix = musicPlaying ? '' : 'Paused — ';
-        const musicText = musicLine ? `${prefix}${musicLine}` : 'Music details unavailable';
-        hintLines.push({ icon: musicPlaying ? 'fa-music' : 'fa-pause', text: musicText });
-      }
-
-      renderHintLines(hintLines, 'Game details unavailable.');
+      // Show song title as hint
+      renderHintLines([], title);
 
       // Update badge
+      setBadge('Listening', '#10b981');
+    };
+
+    const tryGetGameArtwork = async (gameName) => {
+      if (!gameName || gameName === 'In game') return null;
+
+      try {
+        const response = await fetch('https://rpc.dylan.lol/api/game-artwork', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ gameName })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.imageUrl) {
+            return data.imageUrl;
+          }
+        }
+      } catch (error) {
+        console.log('Game artwork API error:', error);
+      }
+
+      return null;
+    };
+
+    const updateForGame = async (gameData, musicData = null) => {
+      const gameName = gameData.name && gameData.name !== '' ? gameData.name : 'Unknown Game';
+      const hasMusic =
+        musicData &&
+        musicData.status === 'Playing' &&
+        musicData.title &&
+        musicData.title !== 'Not Playing';
+
+      // Handle artwork
+      if (widgetArtwork) {
+        // Try to get game artwork first (fetch only when the game changes)
+        if (gameName !== lastGameName) {
+          lastGameName = gameName;
+          cachedGameArtworkUrl = await tryGetGameArtwork(gameName);
+        }
+
+        const gameArtworkUrl = cachedGameArtworkUrl;
+
+        if (gameArtworkUrl) {
+          widgetArtwork.style.backgroundImage = `url("${gameArtworkUrl}")`;
+          widgetArtwork.style.backgroundSize = 'cover';
+          widgetArtwork.style.backgroundRepeat = 'no-repeat';
+          widgetArtwork.style.backgroundPosition = 'center';
+          widgetArtwork.style.backgroundColor = '';
+          widgetArtwork.style.opacity = '1';
+          widgetArtwork.innerHTML = '';
+        } else if (
+          musicData &&
+          musicData.status === 'Playing' &&
+          musicData.artUrl
+        ) {
+          // Fallback to music artwork if no game logo
+          widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
+          widgetArtwork.style.backgroundSize = 'cover';
+          widgetArtwork.style.backgroundPosition = 'center';
+          widgetArtwork.style.backgroundColor = '';
+          widgetArtwork.style.opacity = '0.6'; // Slightly dim the music artwork
+          widgetArtwork.innerHTML = '';
+        } else {
+            // Add game-themed animated fallback
+            widgetArtwork.style.backgroundImage = '';
+            widgetArtwork.style.backgroundColor = 'var(--accent-soft)';
+            widgetArtwork.style.opacity = '1';
+
+            if (typeof anime !== 'undefined') {
+              widgetArtwork.innerHTML = `
+                <div class="game-animation">
+                  <div class="game-pulse"></div>
+                  <div class="game-ring"></div>
+                </div>
+              `;
+              const gameContainer = widgetArtwork.querySelector('.game-animation');
+              if (gameContainer) {
+                gameContainer.style.cssText = `
+                  position: absolute;
+                  inset: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 24px;
+                  overflow: hidden;
+                `;
+
+                const pulse = widgetArtwork.querySelector('.game-pulse');
+                const ring = widgetArtwork.querySelector('.game-ring');
+
+                if (pulse) {
+                  pulse.style.cssText = `
+                    position: absolute;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background: linear-gradient(45deg, rgba(139,92,246,0.4), rgba(99,102,241,0.3));
+                  `;
+
+                  anime({
+                    targets: pulse,
+                    scale: [1, 1.5],
+                    opacity: [0.6, 0.2],
+                    duration: 2000,
+                    easing: 'easeInOutQuad',
+                    direction: 'alternate',
+                    loop: true
+                  });
+                }
+
+                if (ring) {
+                  ring.style.cssText = `
+                    position: absolute;
+                    width: 60px;
+                    height: 60px;
+                    border: 2px solid rgba(139,92,246,0.3);
+                    border-radius: 50%;
+                  `;
+
+                  anime({
+                    targets: ring,
+                    rotate: '360deg',
+                    duration: 4000,
+                    easing: 'linear',
+                    loop: true
+                  });
+                }
+              }
+            }
+          }
+        }
+
+      // Show dual labels for game + music or single label for game only
       if (hasMusic) {
-        setBadge(
-          musicPlaying ? 'Gaming + Music' : 'Gaming + Music (Paused)',
-          musicPlaying ? '#6366f1' : '#8b5cf6'
-        );
+        const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
+        setDualLabels('gamepad-2', gameName, 'music', artist);
+
+        // Show song title as hint when playing both
+        const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
+        renderHintLines([], title);
+      } else {
+        setLabel('gamepad-2', gameName);
+
+        // Calculate and show playtime as hint
+        const playtime = calculatePlaytime(gameData.start_time);
+        if (playtime) {
+          renderHintLines([], `Playing for ${playtime}`);
+        } else {
+          renderHintLines([]);
+        }
+      }
+      // Update badge
+      if (hasMusic) {
+        setBadge('Gaming + Music', '#6366f1');
       } else {
         setBadge('Gaming', '#8b5cf6'); // Purple for gaming
       }
     };
 
     const updateForIdle = () => {
-      // Clear artwork
+      resetGameArtworkCache();
+
+      // Set idle artwork with anime.js animation
       if (widgetArtwork) {
         widgetArtwork.style.backgroundImage = '';
+        widgetArtwork.style.backgroundColor = 'var(--accent-soft)';
         widgetArtwork.style.opacity = '1';
+
+        // Add a cool anime.js animation for idle state
+        if (typeof anime !== 'undefined') {
+          widgetArtwork.innerHTML = `
+            <div class="idle-animation">
+              <div class="idle-orb idle-orb-1"></div>
+              <div class="idle-orb idle-orb-2"></div>
+              <div class="idle-orb idle-orb-3"></div>
+            </div>
+          `;
+          const idleContainer = widgetArtwork.querySelector('.idle-animation');
+          if (idleContainer) {
+            idleContainer.style.cssText = `
+              position: absolute;
+              inset: 0;
+              overflow: hidden;
+              border-radius: 24px;
+            `;
+
+            const orbs = widgetArtwork.querySelectorAll('.idle-orb');
+            orbs.forEach((orb, index) => {
+              orb.style.cssText = `
+                position: absolute;
+                width: ${30 + index * 15}px;
+                height: ${30 + index * 15}px;
+                border-radius: 50%;
+                background: linear-gradient(45deg,
+                  rgba(255,255,255,${0.1 - index * 0.02}) 0%,
+                  rgba(255,255,255,${0.05 - index * 0.01}) 100%);
+                filter: blur(${index + 1}px);
+              `;
+
+              anime({
+                targets: orb,
+                translateX: () => anime.random(-40, 40),
+                translateY: () => anime.random(-40, 40),
+                scale: [0.8, 1.2],
+                opacity: [0.3, 0.7],
+                duration: () => anime.random(3000, 6000),
+                delay: index * 800,
+                direction: 'alternate',
+                easing: 'easeInOutSine',
+                loop: true
+              });
+            });
+          }
+        }
       }
 
-      // Update label
-      setLabel('fa-waveform-lines', 'Currently idle');
+      // Update label - use a valid Lucide icon
+      setLabel('circle-dot', 'Currently idle');
 
-      // Update hint
-      renderHintLines([], 'No music or games currently active. Start something to see it here.');
+      // Update hint for idle state with personalized message
+      const personalizedMessages = [
+        'Not gaming or jamming right now.',
+        'Taking a break. Back soon!',
+        'Currently offline. Check back later!',
+        'Away from the setup.',
+        'Nothing playing at the moment.'
+      ];
+      const randomMessage = personalizedMessages[Math.floor(Math.random() * personalizedMessages.length)];
+      renderHintLines([], randomMessage);
 
       // Update badge - keep it simple
       setBadge('Live', '#6b7280'); // Gray for idle
@@ -405,9 +737,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Update label to show connection status
-      setLabel('fa-wifi', 'Connection lost');
+      setLabel('wifi-off', 'Connection lost');
 
-      // Update hint
+      // Update hint for connection error
       renderHintLines([], 'Unable to connect to activity service. Retrying...');
 
       // Update badge
@@ -422,9 +754,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Update label
-      setLabel('fa-wifi', 'Connecting...');
+      setLabel('wifi', 'Connecting...');
 
-      // Update hint
+      // Update hint for connecting state
       renderHintLines([], 'Establishing connection to activity service.');
 
       // Update badge
@@ -439,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const data = await response.json();
-        updateWidget(data);
+        await updateWidget(data);
 
         // Update connection status
         if (!isConnected) {
@@ -480,8 +812,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('beforeunload', () => {
       stopPolling();
     });
-  };
+  }; // End of initActivityWidget function
 
   // Initialize activity widget
   initActivityWidget();
 });
+
+
+
+
