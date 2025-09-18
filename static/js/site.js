@@ -344,6 +344,43 @@ document.addEventListener('DOMContentLoaded', () => {
       return sanitizeText(musicData.source || musicData.service || musicData.platform);
     };
 
+    const buildMusicLines = (musicData, { emphasiseStatus = false } = {}) => {
+      if (!musicData) {
+        return [];
+      }
+
+      const lines = [];
+      const isPlaying = musicData.status === 'Playing';
+      const sanitizedTitle = sanitizeText(musicData.title, ['Not Playing']);
+      const trackLine = getTrackLine(musicData);
+      const album = getAlbumLine(musicData);
+      const source = getMusicSource(musicData);
+      const statusIcon = isPlaying ? 'fa-music' : 'fa-pause';
+      const statusPrefix = emphasiseStatus ? (isPlaying ? 'Listening to ' : 'Music paused — ') : '';
+
+      if (trackLine) {
+        lines.push({ icon: statusIcon, text: `${statusPrefix}${trackLine}`.trim() });
+      } else if (sanitizedTitle) {
+        const statusText = emphasiseStatus
+          ? `${statusPrefix}${sanitizedTitle}`.trim()
+          : sanitizedTitle;
+        lines.push({ icon: statusIcon, text: statusText });
+      } else if (emphasiseStatus) {
+        lines.push({ icon: statusIcon, text: isPlaying ? 'Listening to music' : 'Music paused' });
+      }
+
+      if (album && album !== sanitizedTitle) {
+        lines.push({ icon: 'fa-compact-disc', text: album });
+      }
+
+      if (source) {
+        const sourcePrefix = isPlaying ? 'On' : 'From';
+        lines.push({ icon: 'fa-waveform-lines', text: `${sourcePrefix} ${source}` });
+      }
+
+      return lines;
+    };
+
     const buildGameLines = (gameData) => {
       if (!gameData) {
         return [];
@@ -399,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateForMusic = (musicData) => {
       const isPlaying = musicData.status === 'Playing';
+      const trackLine = getTrackLine(musicData);
 
       // Update artwork
       if (musicData.artUrl && widgetArtwork) {
@@ -413,29 +451,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update label
       const icon = isPlaying ? 'fa-music' : 'fa-pause';
-      const statusText = isPlaying ? 'Listening now' : 'Music paused';
-      setLabel(icon, statusText);
+      const labelText = trackLine
+        ? isPlaying
+          ? `Listening to ${trackLine}`
+          : `Music paused — ${trackLine}`
+        : isPlaying
+          ? 'Listening to music'
+          : 'Music paused';
+      setLabel(icon, labelText);
 
       // Update hint with track info
-      const trackLine = getTrackLine(musicData);
-      const sanitizedTitle = sanitizeText(musicData.title, ['Not Playing']);
-      const album = getAlbumLine(musicData);
-      const source = getMusicSource(musicData);
-      const hintLines = [];
-
-      if (trackLine) {
-        hintLines.push({ icon, text: trackLine });
-      }
-
-      if (album && album !== sanitizedTitle) {
-        hintLines.push({ icon: 'fa-compact-disc', text: album });
-      }
-
-      if (source) {
-        const prefix = isPlaying ? 'Listening on' : 'From';
-        hintLines.push({ icon: 'fa-waveform-lines', text: `${prefix} ${source}` });
-      }
-
+      const hintLines = buildMusicLines(musicData);
       renderHintLines(hintLines, 'Music details unavailable.');
 
       // Update badge
@@ -462,10 +488,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const hasMusic = Boolean(musicTitle);
       const musicPlaying = Boolean(hasMusic && musicData.status === 'Playing');
       const labelIcon = hasMusic ? 'fa-headset' : 'fa-gamepad';
+      const baseGameLabel = rawGameName ? `Playing ${rawGameName}` : 'Playing a game';
       const labelText = hasMusic
         ? musicPlaying
-          ? 'Gaming & listening'
-          : 'Gaming • music paused'
+          ? `${baseGameLabel} with music`
+          : `${baseGameLabel} with music paused`
         : rawGameName
           ? `Playing ${rawGameName}`
           : 'In game';
@@ -473,13 +500,14 @@ document.addEventListener('DOMContentLoaded', () => {
       setLabel(labelIcon, labelText);
 
       // Update hint with game and optional music info
-      const hintLines = buildGameLines(gameData);
+      const hintLines = [];
+      const gameLines = buildGameLines(gameData);
+      if (gameLines.length) {
+        hintLines.push(...gameLines);
+      }
 
       if (hasMusic) {
-        const musicLine = getTrackLine(musicData);
-        const prefix = musicPlaying ? '' : 'Paused — ';
-        const musicText = musicLine ? `${prefix}${musicLine}` : 'Music details unavailable';
-        hintLines.push({ icon: musicPlaying ? 'fa-music' : 'fa-pause', text: musicText });
+        hintLines.push(...buildMusicLines(musicData, { emphasiseStatus: true }));
       }
 
       renderHintLines(hintLines, 'Game details unavailable.');
