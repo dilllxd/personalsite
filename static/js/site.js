@@ -295,6 +295,80 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
+    const setStackedLabelsWithHints = (gameIcon, gameText, gameHint, musicIcon, musicText, musicHint) => {
+      if (!widgetLabel || !widgetHint) return;
+      widgetLabel.innerHTML = '';
+      widgetHint.innerHTML = '';
+
+      // Create a stacked layout: game-title, game-hint, music-title, music-hint
+      widgetLabel.className = 'widget-shell__label widget-shell__label--stacked';
+
+      // Game label
+      const gameLabel = document.createElement('div');
+      gameLabel.className = 'widget-shell__label-item';
+
+      const gameIconEl = document.createElement('i');
+      gameIconEl.setAttribute('data-lucide', gameIcon);
+      gameIconEl.setAttribute('aria-hidden', 'true');
+      gameLabel.appendChild(gameIconEl);
+
+      const { content: gameContent, shouldMultiline: gameMultiline } = createMultilineText(gameText);
+      const gameTextEl = document.createElement('span');
+      gameTextEl.className = gameMultiline ? 'widget-shell__label-text widget-shell__label-text--multiline' : 'widget-shell__label-text';
+      gameTextEl.textContent = gameContent;
+      gameLabel.appendChild(gameTextEl);
+
+      widgetLabel.appendChild(gameLabel);
+
+      // Game hint right after game title
+      if (gameHint) {
+        const gameHintEl = document.createElement('div');
+        gameHintEl.className = 'widget-shell__hint-line widget-shell__hint-line--stacked';
+        gameHintEl.textContent = gameHint;
+        widgetLabel.appendChild(gameHintEl);
+      }
+
+      // Music label
+      const musicLabel = document.createElement('div');
+      musicLabel.className = 'widget-shell__label-item';
+
+      const musicIconEl = document.createElement('i');
+      musicIconEl.setAttribute('data-lucide', musicIcon);
+      musicIconEl.setAttribute('aria-hidden', 'true');
+      musicLabel.appendChild(musicIconEl);
+
+      const { content: musicContent, shouldMultiline: musicMultiline } = createMultilineText(musicText);
+      const musicTextEl = document.createElement('span');
+      musicTextEl.className = musicMultiline ? 'widget-shell__label-text widget-shell__label-text--multiline' : 'widget-shell__label-text';
+      musicTextEl.textContent = musicContent;
+      musicLabel.appendChild(musicTextEl);
+
+      widgetLabel.appendChild(musicLabel);
+
+      // Music hint right after music title
+      if (musicHint) {
+        const musicHintEl = document.createElement('div');
+        musicHintEl.className = 'widget-shell__hint-line widget-shell__hint-line--stacked';
+        musicHintEl.textContent = musicHint;
+        widgetLabel.appendChild(musicHintEl);
+      }
+
+      // Clear the hint area since we're putting everything in the label area
+      widgetHint.innerHTML = '';
+
+      // Update meta container classes
+      const metaContainer = document.querySelector('.widget-shell__meta');
+      if (metaContainer) {
+        metaContainer.classList.remove('widget-shell__meta--no-hint');
+        metaContainer.classList.add('widget-shell__meta--with-hint');
+      }
+
+      // Reinitialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    };
+
     const setBadge = (text, color) => {
       if (!cardBadge) return;
       cardBadge.textContent = text;
@@ -633,14 +707,17 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-      // Show dual labels for game + music or single label for game only
+      // Show dual labels for game + music with aligned hints
       if (hasMusic) {
         const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
-        setDualLabels('gamepad-2', gameName, 'music', artist);
-
-        // Show song title as hint when playing both
+        const playtime = calculatePlaytime(gameData.start_time);
         const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
-        renderHintLines([], title);
+        const musicLine = `${title} — ${artist}`;
+
+        const gameHint = playtime ? `Playing for ${playtime}` : null;
+        const musicHint = title;
+
+        setStackedLabelsWithHints('gamepad-2', gameName, gameHint, 'music', artist, musicHint);
       } else {
         setLabel('gamepad-2', gameName);
 

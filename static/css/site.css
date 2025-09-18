@@ -647,25 +647,28 @@ button {
   text-align: center;
   flex: 1;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
+  line-height: 1.5;
+  padding: 0.1rem 0;
 }
 
 
 .widget-shell__hint {
   color: var(--text-muted);
   font-size: 0.85rem;
-  line-height: 1.4;
+  line-height: 1.5;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
   align-items: center;
   text-align: center;
-  min-height: 2.4rem;
-  max-height: 2.4rem;
-  overflow: hidden;
+  min-height: 2.6rem;
+  max-height: 2.8rem;
+  padding: 0.1rem 0;
+  overflow: visible;
   justify-content: flex-start;
 }
 
@@ -691,8 +694,10 @@ button {
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
-  min-height: 1.1rem;
+  min-height: 1.4rem;
   text-align: center;
+  line-height: 1.5;
+  padding: 0.1rem 0;
 }
 
 
@@ -1257,8 +1262,29 @@ button {
   white-space: normal;
   word-wrap: break-word;
   text-align: center;
-  line-height: 1.3;
-  max-height: 3.9em; /* Allow up to 3 lines */
+  line-height: 1.5;
+  max-height: 4.5em; /* Allow up to 3 lines with better spacing */
+  overflow: visible;
+  padding: 0.1rem 0;
+}
+/* Stacked layout for title-hint-title-hint pattern */
+.widget-shell__label--stacked {
+  flex-direction: column !important;
+  gap: 0.2rem !important;
+  align-items: center !important;
+}
+.widget-shell__hint-line--stacked {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.4rem;
+  margin: 0;
+  padding: 0.1rem 0;
+}
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
