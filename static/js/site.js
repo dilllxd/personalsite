@@ -1,14 +1,6 @@
 import anime from 'https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.es.js';
 import { io } from 'https://cdn.socket.io/4.7.2/socket.io.esm.min.js';
 
-// Last.fm configuration - set these to enable Last.fm failover
-// To get an API key, visit: https://www.last.fm/api/account/create
-// Set your Last.fm username (the one visible in your profile URL)
-const LASTFM_CONFIG = {
-  apiKey: null, // Set your Last.fm API key here
-  username: null // Set your Last.fm username here
-};
-
 document.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   const yearsSinceElements = document.querySelectorAll('[data-years-since]');
@@ -226,8 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let updateInterval;
     let isConnected = false;
-    let lastFmService = null;
-    let isUsingLastFm = false;
+    let isUsingLastFmFallback = false;
     let lastFmRetryTimeout = null;
 
     let lastActivityName = null;
@@ -236,12 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentMusicData = null;
     let lastUpdateTime = null;
     let positionTimer = null;
-
-    // Initialize Last.fm service if configured
-    if (LASTFM_CONFIG.apiKey && LASTFM_CONFIG.username) {
-      lastFmService = new LastFmService(LASTFM_CONFIG.apiKey, LASTFM_CONFIG.username);
-      console.log('Last.fm failover configured for user:', LASTFM_CONFIG.username);
-    }
 
     const formatTime = (seconds) => {
       if (!seconds || seconds <= 0) return '0:00';
@@ -1114,13 +1099,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateForConnectionError = () => {
-      // Try Last.fm failover if available and not already using it
-      if (lastFmService && !isUsingLastFm) {
-        console.log('RPC backend offline, switching to Last.fm failover');
-        activateLastFmFailover();
-        return;
-      }
-
       // Clear artwork
       if (widgetArtwork) {
         widgetArtwork.style.backgroundImage = '';
@@ -1131,9 +1109,9 @@ document.addEventListener('DOMContentLoaded', () => {
       setLabel('wifi-off', 'Connection lost');
 
       // Update hint for connection error
-      const errorMessage = lastFmService ?
-        'RPC backend offline. Last.fm failover unavailable.' :
-        'Unable to connect to activity service. Retrying...';
+      const errorMessage = isUsingLastFmFallback ?
+        'Both RPC backend and Last.fm API unavailable.' :
+        'Unable to connect to activity service. Trying Last.fm fallback...';
       renderHintLines([], errorMessage);
 
       // Update badge
@@ -1170,6 +1148,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         await updateWidget(data);
 
+        // If we were using Last.fm fallback, switch back to RPC
+        if (isUsingLastFmFallback) {
+          console.log('RPC backend back online, switching from Last.fm fallback');
+          isUsingLastFmFallback = false;
+          clearTimeout(lastFmRetryTimeout);
+          clearInterval(updateInterval); // Stop Last.fm polling
+          setBadge('Connected', '#10b981'); // Update badge
+        }
+
         // Update connection status
         if (!isConnected) {
           isConnected = true;
@@ -1180,9 +1167,53 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Failed to fetch activity data:', error);
         isConnected = false;
 
-        // Show connection error in widget content
+        // Try Last.fm fallback if not already using it
+        if (!isUsingLastFmFallback) {
+          tryLastFmFallback();
+        } else {
+          updateForConnectionError();
+        }
+      }
+    };
+
+    const fetchLastFmData = async () => {
+      try {
+        const response = await fetch('https://lastfm.dylan.lol/api/recent');
+        if (!response.ok) {
+          throw new Error(`Last.fm API HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Transform Last.fm data to match RPC format
+        const transformedData = {
+          music: data.music || null,
+          activity: null, // Last.fm only provides music data
+          source: 'lastfm'
+        };
+
+        await updateWidget(transformedData);
+        console.log('Using Last.fm fallback data');
+
+      } catch (error) {
+        console.error('Failed to fetch Last.fm data:', error);
         updateForConnectionError();
       }
+    };
+
+    const tryLastFmFallback = () => {
+      console.log('RPC backend offline, trying Last.fm fallback');
+      isUsingLastFmFallback = true;
+
+      // Update badge to show fallback mode
+      setBadge('Last.fm Fallback', '#d97706');
+
+      // Try Last.fm immediately
+      fetchLastFmData();
+
+      // Set up Last.fm polling (less frequent than RPC)
+      clearInterval(updateInterval);
+      updateInterval = setInterval(fetchLastFmData, 15000); // 15 seconds
     };
 
     // WebSocket connection for real-time updates
@@ -1203,10 +1234,11 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log('[WebSocket] Connected to activity server');
           setBadge('Connected', '#10b981'); // Green for connected
 
-          // If we were using Last.fm failover, switch back to RPC
-          if (isUsingLastFm) {
-            console.log('RPC backend back online, switching from Last.fm failover');
-            deactivateLastFmFailover();
+          // If we were using Last.fm fallback, switch back to RPC
+          if (isUsingLastFmFallback) {
+            console.log('RPC backend back online, switching from Last.fm fallback');
+            isUsingLastFmFallback = false;
+            clearInterval(updateInterval);
           }
 
           // Immediately fetch data after connection
@@ -1222,12 +1254,12 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log('[WebSocket] Disconnected from activity server:', reason);
           setBadge('Disconnected', '#ef4444'); // Red for disconnected
 
-          // Try Last.fm failover after a brief delay
-          if (lastFmService && !isUsingLastFm) {
+          // Try Last.fm fallback after a brief delay
+          if (!isUsingLastFmFallback) {
             lastFmRetryTimeout = setTimeout(() => {
-              console.log('WebSocket disconnected, trying Last.fm failover');
-              activateLastFmFailover();
-            }, 3000); // Wait 3 seconds before activating failover
+              console.log('WebSocket disconnected, trying Last.fm fallback');
+              tryLastFmFallback();
+            }, 3000); // Wait 3 seconds before activating fallback
           }
         });
 
@@ -1245,11 +1277,11 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('[WebSocket] Connection error:', error);
           setBadge('Connection Error', '#ef4444'); // Red for error
 
-          // Try Last.fm failover if connection completely fails
-          if (lastFmService && !isUsingLastFm) {
+          // Try Last.fm fallback if connection completely fails
+          if (!isUsingLastFmFallback) {
             setTimeout(() => {
-              console.log('WebSocket connection failed, trying Last.fm failover');
-              activateLastFmFailover();
+              console.log('WebSocket connection failed, trying Last.fm fallback');
+              tryLastFmFallback();
             }, 2000);
           }
         });
@@ -1271,59 +1303,6 @@ document.addEventListener('DOMContentLoaded', () => {
       updateInterval = setInterval(fetchActivityData, 3000);
     };
 
-    // Last.fm failover functions
-    const activateLastFmFailover = () => {
-      if (!lastFmService || isUsingLastFm) return;
-
-      console.log('Activating Last.fm failover');
-      isUsingLastFm = true;
-
-      // Clear any existing retry timeout
-      if (lastFmRetryTimeout) {
-        clearTimeout(lastFmRetryTimeout);
-        lastFmRetryTimeout = null;
-      }
-
-      // Update badge to show Last.fm mode
-      setBadge('Last.fm Fallback', '#d97706'); // Orange for fallback mode
-
-      // Start Last.fm polling
-      lastFmService.startPolling((data) => {
-        console.log('[Last.fm] Received data:', data);
-
-        // Add a flag to indicate this is from Last.fm
-        if (data && data.music) {
-          data.music.source = 'lastfm';
-        }
-
-        updateWidget(data);
-      }, 15000); // Poll every 15 seconds (Last.fm rate limits)
-
-      // Update label to show failover status
-      setLabel('radio', 'Music via Last.fm');
-      renderHintLines([], 'RPC backend offline, using Last.fm data');
-    };
-
-    const deactivateLastFmFailover = () => {
-      if (!isUsingLastFm) return;
-
-      console.log('Deactivating Last.fm failover');
-      isUsingLastFm = false;
-
-      // Clear retry timeout
-      if (lastFmRetryTimeout) {
-        clearTimeout(lastFmRetryTimeout);
-        lastFmRetryTimeout = null;
-      }
-
-      // Stop Last.fm polling
-      if (lastFmService) {
-        lastFmService.stopPolling();
-      }
-
-      console.log('Switched back to RPC backend');
-    };
-
     // Cleanup function
     const cleanup = () => {
       if (socket) {
@@ -1338,9 +1317,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(lastFmRetryTimeout);
         lastFmRetryTimeout = null;
       }
-      if (lastFmService) {
-        lastFmService.stopPolling();
-      }
       stopPositionTimer();
     };
 
@@ -1351,16 +1327,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(() => {
       // If initial fetch fails, try WebSocket first
       connectWebSocket();
-
-      // If WebSocket also fails and Last.fm is configured, activate failover after a delay
-      if (lastFmService) {
-        setTimeout(() => {
-          if (!isConnected && !isUsingLastFm) {
-            console.log('Initial connection failed, activating Last.fm failover');
-            activateLastFmFailover();
-          }
-        }, 5000); // Wait 5 seconds before activating Last.fm
-      }
     });
 
     // Cleanup on page unload
