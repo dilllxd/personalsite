@@ -1,4 +1,5 @@
 import anime from 'https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.es.js';
+import { io } from 'https://cdn.socket.io/4.7.2/socket.io.esm.min.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
@@ -218,12 +219,112 @@ document.addEventListener('DOMContentLoaded', () => {
     let updateInterval;
     let isConnected = false;
 
-    let lastGameName = null;
-    let cachedGameArtworkUrl = null;
+    let lastActivityName = null;
+    let cachedActivityArtworkUrl = null;
+    let recordSpinAnimation = null;
+    let currentMusicData = null;
+    let lastUpdateTime = null;
+    let positionTimer = null;
 
-    const resetGameArtworkCache = () => {
-      lastGameName = null;
-      cachedGameArtworkUrl = null;
+    const formatTime = (seconds) => {
+      if (!seconds || seconds <= 0) return '0:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    const updateProgress = (position, length) => {
+      if (!widgetShell || position == null || length == null || length === 0) {
+        if (widgetShell) {
+          widgetShell.classList.remove('widget-shell--with-progress');
+          widgetShell.style.removeProperty('--progress');
+        }
+        return;
+      }
+      const progress = Math.min(100, Math.max(0, (position / length) * 100));
+      widgetShell.classList.add('widget-shell--with-progress');
+      widgetShell.style.setProperty('--progress', `${progress}%`);
+    };
+
+    const updateTimeDisplay = () => {
+      if (!currentMusicData || currentMusicData.status !== 'Playing') return;
+
+      const now = Date.now();
+      const elapsed = lastUpdateTime ? (now - lastUpdateTime) / 1000 : 0;
+      // Ensure we use the latest position from the server instead of defaulting to 0
+      const basePosition = currentMusicData.position || 0;
+      const currentPosition = Math.min(
+        currentMusicData.length,
+        basePosition + elapsed
+      );
+
+      // Update progress bar
+      updateProgress(currentPosition, currentMusicData.length);
+
+      // Update time display in the artwork
+      const timeElement = widgetArtwork?.querySelector('.widget-shell__artwork__time');
+      if (timeElement) {
+        timeElement.textContent = `${formatTime(currentPosition)} / ${formatTime(currentMusicData.length)}`;
+      }
+    };
+
+    const startPositionTimer = () => {
+      stopPositionTimer();
+      if (currentMusicData && currentMusicData.status === 'Playing') {
+        positionTimer = setInterval(updateTimeDisplay, 250); // Update 4 times per second for smooth progress
+      }
+    };
+
+    const stopPositionTimer = () => {
+      if (positionTimer) {
+        clearInterval(positionTimer);
+        positionTimer = null;
+      }
+    };
+
+    const startRecordSpin = () => {
+      if (!widgetArtwork || !anime) return;
+
+      // Stop any existing animation first
+      stopRecordSpin();
+
+      widgetArtwork.classList.add('widget-shell__artwork--spinning');
+
+      recordSpinAnimation = anime({
+        targets: widgetArtwork,
+        rotate: '360deg',
+        duration: 3000,
+        easing: 'linear',
+        loop: true,
+        autoplay: true
+      });
+    };
+
+    const stopRecordSpin = () => {
+      if (recordSpinAnimation) {
+        recordSpinAnimation.pause();
+        recordSpinAnimation = null;
+      }
+
+      if (widgetArtwork) {
+        widgetArtwork.classList.remove('widget-shell__artwork--spinning');
+        widgetArtwork.classList.remove('widget-shell__artwork--record');
+        // Reset rotation to 0
+        if (anime) {
+          anime.set(widgetArtwork, { rotate: '0deg' });
+        }
+      }
+
+      // Clear progress border
+      updateProgress(0, 0);
+    };
+
+    const resetActivityArtworkCache = () => {
+      lastActivityName = null;
+      cachedActivityArtworkUrl = null;
+
+      // Stop spinning animation when resetting
+      stopRecordSpin();
     };
 
     const setLabel = (iconName, text) => {
@@ -470,30 +571,62 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!activityData) return;
 
       const musicData = activityData.music || {};
-      const gameData = activityData.game || {};
+      const activityDataInfo = activityData.activity || {};
+
+      // Store current music data and update time for real-time tracking
+      const previousMusicData = currentMusicData;
+      const trackChanged = !previousMusicData ||
+        previousMusicData.title !== musicData.title ||
+        previousMusicData.artist !== musicData.artist ||
+        previousMusicData.status !== musicData.status;
+
+      // Check for significant position changes (skip/reverse >5 seconds)
+      const positionJumped = previousMusicData && musicData.position != null &&
+        previousMusicData.position != null &&
+        Math.abs(musicData.position - previousMusicData.position) > 5;
+
+      // Check for pause/resume state changes
+      const stateChanged = previousMusicData &&
+        previousMusicData.status !== musicData.status;
+
+      currentMusicData = musicData;
+      lastUpdateTime = Date.now();
+
+      // Force immediate time display update if track changed, position jumped, or state changed
+      if (trackChanged || positionJumped || stateChanged) {
+        updateTimeDisplay();
+      }
 
       const isMusicPlaying = musicData.status === 'Playing';
-      const hasMusic = isMusicPlaying && musicData.title && musicData.title !== 'Not Playing';
-      const hasGame = gameData.name && gameData.name !== '';
+      const isPaused = musicData.status === 'Paused';
+      const hasMusic = (isMusicPlaying || isPaused) && musicData.title && musicData.title !== 'Not Playing';
+      const hasActivity = activityDataInfo.name && activityDataInfo.name !== '';
+
+      // Start or stop position timer based on music state
+      if (hasMusic && isMusicPlaying) {
+        startPositionTimer();
+      } else {
+        stopPositionTimer();
+      }
 
       // Determine what to display based on current activities
-      if (hasMusic && hasGame) {
-        // Both music and game - prioritize game but show music info
-        await updateForGame(gameData, musicData);
-      } else if (hasGame) {
-        // Only game
-        await updateForGame(gameData);
+      if (hasMusic && hasActivity) {
+        // Both music and activity - prioritize activity but show music info
+        await updateForActivity(activityDataInfo, musicData, trackChanged);
+      } else if (hasActivity) {
+        // Only activity
+        await updateForActivity(activityDataInfo);
       } else if (hasMusic) {
         // Only music
-        updateForMusic(musicData);
+        updateForMusic(musicData, trackChanged);
       } else {
         // Nothing playing
         updateForIdle();
       }
     };
 
-    const updateForMusic = (musicData) => {
-      resetGameArtworkCache();
+    const updateForMusic = (musicData, trackChanged = true) => {
+      resetActivityArtworkCache();
 
       const isPlaying = musicData.status === 'Playing';
 
@@ -504,17 +637,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update artwork
       if (musicData.artUrl && widgetArtwork) {
-        widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
-        widgetArtwork.style.backgroundSize = 'cover';
-        widgetArtwork.style.backgroundPosition = 'center';
+        // Create vinyl record with album art overlay
+        widgetArtwork.style.backgroundImage = '';
         widgetArtwork.style.backgroundColor = '';
         widgetArtwork.style.opacity = '1';
-        widgetArtwork.innerHTML = '';
+        widgetArtwork.classList.add('widget-shell__artwork--record');
+
+        widgetArtwork.innerHTML = `
+          <div class="widget-shell__artwork__album" style="background-image: url('${musicData.artUrl}')"></div>
+          <div class="widget-shell__artwork__center"></div>
+          <div class="widget-shell__artwork__time">${formatTime(musicData.position || 0)} / ${formatTime(musicData.length || 0)}</div>
+        `;
+
+        // Update progress border
+        updateProgress(musicData.position, musicData.length);
+
+        // Add spinning animation for music (only restart if track changed)
+        if (trackChanged) {
+          startRecordSpin();
+        }
       } else if (widgetArtwork) {
         // Add music-themed animated fallback
         widgetArtwork.style.backgroundImage = '';
         widgetArtwork.style.backgroundColor = 'var(--accent-soft)';
         widgetArtwork.style.opacity = '1';
+        stopRecordSpin();
 
         if (typeof anime !== 'undefined') {
           widgetArtwork.innerHTML = `
@@ -599,8 +746,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return null;
     };
 
-    const updateForGame = async (gameData, musicData = null) => {
-      const gameName = gameData.name && gameData.name !== '' ? gameData.name : 'Unknown Game';
+    const updateForActivity = async (activityData, musicData = null, trackChanged = true) => {
+      const activityName = activityData.name && activityData.name !== '' ? activityData.name : 'Unknown Activity';
+      const activityType = activityData.type || 'unknown';
+      const activityIcon = activityData.icon || 'circle-dot';
       const hasMusic =
         musicData &&
         musicData.status === 'Playing' &&
@@ -609,39 +758,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Handle artwork
       if (widgetArtwork) {
-        // Try to get game artwork first (fetch only when the game changes)
-        if (gameName !== lastGameName) {
-          lastGameName = gameName;
-          cachedGameArtworkUrl = await tryGetGameArtwork(gameName);
-        }
+        // Try to get game artwork first (only for games, fetch only when the activity changes)
+        if (activityType === 'game') {
+          if (activityName !== lastActivityName) {
+            lastActivityName = activityName;
+            cachedActivityArtworkUrl = await tryGetGameArtwork(activityName);
+          }
 
-        const gameArtworkUrl = cachedGameArtworkUrl;
+          const gameArtworkUrl = cachedActivityArtworkUrl;
 
-        if (gameArtworkUrl) {
-          widgetArtwork.style.backgroundImage = `url("${gameArtworkUrl}")`;
-          widgetArtwork.style.backgroundSize = 'cover';
-          widgetArtwork.style.backgroundRepeat = 'no-repeat';
-          widgetArtwork.style.backgroundPosition = 'center';
-          widgetArtwork.style.backgroundColor = '';
-          widgetArtwork.style.opacity = '1';
-          widgetArtwork.innerHTML = '';
-        } else if (
-          musicData &&
-          musicData.status === 'Playing' &&
-          musicData.artUrl
-        ) {
-          // Fallback to music artwork if no game logo
-          widgetArtwork.style.backgroundImage = `url("${musicData.artUrl}")`;
-          widgetArtwork.style.backgroundSize = 'cover';
-          widgetArtwork.style.backgroundPosition = 'center';
-          widgetArtwork.style.backgroundColor = '';
-          widgetArtwork.style.opacity = '0.6'; // Slightly dim the music artwork
-          widgetArtwork.innerHTML = '';
-        } else {
+          if (gameArtworkUrl) {
+            widgetArtwork.style.backgroundImage = `url("${gameArtworkUrl}")`;
+            widgetArtwork.style.backgroundSize = 'cover';
+            widgetArtwork.style.backgroundRepeat = 'no-repeat';
+            widgetArtwork.style.backgroundPosition = 'center';
+            widgetArtwork.style.backgroundColor = '';
+            widgetArtwork.style.opacity = '1';
+            widgetArtwork.innerHTML = '';
+            stopRecordSpin();
+          } else if (
+            musicData &&
+            musicData.status === 'Playing' &&
+            musicData.artUrl
+          ) {
+            // Fallback to music vinyl record if no game logo
+            widgetArtwork.style.backgroundImage = '';
+            widgetArtwork.style.backgroundColor = '';
+            widgetArtwork.style.opacity = '0.8'; // Slightly dim the record
+            widgetArtwork.classList.add('widget-shell__artwork--record');
+
+            widgetArtwork.innerHTML = `
+              <div class="widget-shell__artwork__album" style="background-image: url('${musicData.artUrl}')"></div>
+              <div class="widget-shell__artwork__center"></div>
+              <div class="widget-shell__artwork__time">${formatTime(musicData.position || 0)} / ${formatTime(musicData.length || 0)}</div>
+            `;
+
+            // Update progress border
+            updateProgress(musicData.position, musicData.length);
+
+            // Add spinning animation for music (only restart if track changed)
+            if (trackChanged) {
+              startRecordSpin();
+            }
+          } else {
             // Add game-themed animated fallback
             widgetArtwork.style.backgroundImage = '';
             widgetArtwork.style.backgroundColor = 'var(--accent-soft)';
             widgetArtwork.style.opacity = '1';
+            stopRecordSpin();
 
             if (typeof anime !== 'undefined') {
               widgetArtwork.innerHTML = `
@@ -705,40 +869,160 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             }
           }
-        }
+        } else {
+          // For non-game activities, use music artwork if available or create activity-themed animation
+          if (
+            musicData &&
+            musicData.status === 'Playing' &&
+            musicData.artUrl
+          ) {
+            // Use vinyl record for music
+            widgetArtwork.style.backgroundImage = '';
+            widgetArtwork.style.backgroundColor = '';
+            widgetArtwork.style.opacity = '0.7'; // Slightly dim to show it's not the primary focus
+            widgetArtwork.classList.add('widget-shell__artwork--record');
 
-      // Show dual labels for game + music with aligned hints
+            widgetArtwork.innerHTML = `
+              <div class="widget-shell__artwork__album" style="background-image: url('${musicData.artUrl}')"></div>
+              <div class="widget-shell__artwork__center"></div>
+              <div class="widget-shell__artwork__time">${formatTime(musicData.position || 0)} / ${formatTime(musicData.length || 0)}</div>
+            `;
+
+            // Update progress border
+            updateProgress(musicData.position, musicData.length);
+
+            // Add spinning animation for music (only restart if track changed)
+            if (trackChanged) {
+              startRecordSpin();
+            }
+          } else {
+            // Add activity-themed animated fallback
+            widgetArtwork.style.backgroundImage = '';
+            widgetArtwork.style.backgroundColor = 'var(--accent-soft)';
+            widgetArtwork.style.opacity = '1';
+
+            if (typeof anime !== 'undefined') {
+              widgetArtwork.innerHTML = `
+                <div class="activity-animation">
+                  <div class="activity-pulse"></div>
+                  <div class="activity-dots"></div>
+                </div>
+              `;
+              const activityContainer = widgetArtwork.querySelector('.activity-animation');
+              if (activityContainer) {
+                activityContainer.style.cssText = `
+                  position: absolute;
+                  inset: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 24px;
+                  overflow: hidden;
+                `;
+
+                const pulse = widgetArtwork.querySelector('.activity-pulse');
+                const dots = widgetArtwork.querySelector('.activity-dots');
+
+                if (pulse) {
+                  pulse.style.cssText = `
+                    position: absolute;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 6px;
+                    background: linear-gradient(45deg, rgba(34,197,94,0.4), rgba(59,130,246,0.3));
+                  `;
+
+                  anime({
+                    targets: pulse,
+                    scale: [1, 1.3],
+                    opacity: [0.6, 0.2],
+                    duration: 1500,
+                    easing: 'easeInOutQuad',
+                    direction: 'alternate',
+                    loop: true
+                  });
+                }
+
+                if (dots) {
+                  dots.style.cssText = `
+                    position: absolute;
+                    width: 50px;
+                    height: 50px;
+                  `;
+
+                  // Create small dots around the pulse
+                  for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    dot.style.cssText = `
+                      position: absolute;
+                      width: 4px;
+                      height: 4px;
+                      border-radius: 50%;
+                      background: rgba(34,197,94,0.5);
+                      top: ${20 + Math.cos((i * 120) * Math.PI / 180) * 15}px;
+                      left: ${23 + Math.sin((i * 120) * Math.PI / 180) * 15}px;
+                    `;
+                    dots.appendChild(dot);
+
+                    anime({
+                      targets: dot,
+                      scale: [0.5, 1.5],
+                      opacity: [0.3, 0.8],
+                      duration: 1000,
+                      delay: i * 200,
+                      easing: 'easeInOutSine',
+                      direction: 'alternate',
+                      loop: true
+                    });
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Show dual labels for activity + music with aligned hints
       if (hasMusic) {
         const artist = musicData.artist && musicData.artist !== 'Unknown' ? musicData.artist : 'Unknown Artist';
-        const playtime = calculatePlaytime(gameData.start_time);
+        const playtime = calculatePlaytime(activityData.start_time);
         const title = musicData.title && musicData.title !== 'Not Playing' ? musicData.title : 'Unknown Track';
-        const musicLine = `${title} — ${artist}`;
 
-        const gameHint = playtime ? `Playing for ${playtime}` : null;
+        const activityHint = playtime ? `Active for ${playtime}` : null;
         const musicHint = title;
 
-        setStackedLabelsWithHints('gamepad-2', gameName, gameHint, 'music', artist, musicHint);
+        setStackedLabelsWithHints(activityIcon, activityName, activityHint, 'music', artist, musicHint);
       } else {
-        setLabel('gamepad-2', gameName);
+        setLabel(activityIcon, activityName);
 
-        // Calculate and show playtime as hint
-        const playtime = calculatePlaytime(gameData.start_time);
+        // Calculate and show activity duration as hint
+        const playtime = calculatePlaytime(activityData.start_time);
         if (playtime) {
-          renderHintLines([], `Playing for ${playtime}`);
+          renderHintLines([], `Active for ${playtime}`);
         } else {
           renderHintLines([]);
         }
       }
-      // Update badge
-      if (hasMusic) {
-        setBadge('Gaming + Music', '#6366f1');
-      } else {
-        setBadge('Gaming', '#8b5cf6'); // Purple for gaming
-      }
+
+      // Update badge based on activity type
+      const getActivityBadge = (type, hasMusic) => {
+        const badges = {
+          game: hasMusic ? { text: 'Gaming + Music', color: '#6366f1' } : { text: 'Gaming', color: '#8b5cf6' },
+          development: hasMusic ? { text: 'Coding + Music', color: '#059669' } : { text: 'Coding', color: '#10b981' },
+          productivity: hasMusic ? { text: 'Working + Music', color: '#0891b2' } : { text: 'Working', color: '#06b6d4' },
+          media: hasMusic ? { text: 'Media + Music', color: '#dc2626' } : { text: 'Media', color: '#ef4444' },
+          browser: hasMusic ? { text: 'Browsing + Music', color: '#7c3aed' } : { text: 'Browsing', color: '#8b5cf6' },
+          unknown: hasMusic ? { text: 'Active + Music', color: '#6b7280' } : { text: 'Active', color: '#9ca3af' }
+        };
+        return badges[type] || badges.unknown;
+      };
+
+      const badge = getActivityBadge(activityType, hasMusic);
+      setBadge(badge.text, badge.color);
     };
 
     const updateForIdle = () => {
-      resetGameArtworkCache();
+      resetActivityArtworkCache();
 
       // Set idle artwork with anime.js animation
       if (widgetArtwork) {
@@ -830,17 +1114,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateForConnecting = () => {
-      // Clear artwork
+      // Clear artwork and reset styles
       if (widgetArtwork) {
         widgetArtwork.style.backgroundImage = '';
+        widgetArtwork.style.backgroundColor = 'var(--accent-soft)';
         widgetArtwork.style.opacity = '1';
+        widgetArtwork.innerHTML = '';
+        stopRecordSpin();
       }
 
-      // Update label
-      setLabel('wifi', 'Connecting...');
+      // Update label with proper formatting
+      setLabel('wifi', 'Connecting to service...');
 
-      // Update hint for connecting state
-      renderHintLines([], 'Establishing connection to activity service.');
+      // Update hint for connecting state with better formatting
+      renderHintLines([], 'Establishing connection to activity service...');
 
       // Update badge
       setBadge('Connecting', '#3b82f6'); // Blue for connecting
@@ -871,8 +1158,62 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    // Start polling for activity data
-    const startPolling = () => {
+    // WebSocket connection for real-time updates
+    let socket = null;
+
+    const connectWebSocket = () => {
+      try {
+        socket = io('https://rpc.dylan.lol', {
+          timeout: 30000,           // 30 second timeout instead of default 20s
+          reconnection: true,       // Enable auto-reconnection
+          reconnectionDelay: 2000,  // Wait 2s before first reconnect attempt
+          reconnectionDelayMax: 10000, // Max 10s between reconnect attempts
+          maxReconnectionAttempts: 5,  // Try 5 times before giving up
+          forceNew: false          // Reuse existing connection if possible
+        });
+
+        socket.on('connect', () => {
+          console.log('[WebSocket] Connected to activity server');
+          setBadge('Connected', '#10b981'); // Green for connected
+          // Immediately fetch data after connection
+          fetchActivityData();
+        });
+
+        socket.on('website_data', (data) => {
+          console.log('[WebSocket] Received data:', data);
+          updateWidget(data);
+        });
+
+        socket.on('disconnect', (reason) => {
+          console.log('[WebSocket] Disconnected from activity server:', reason);
+          setBadge('Disconnected', '#ef4444'); // Red for disconnected
+        });
+
+        socket.on('reconnect_attempt', (attemptNumber) => {
+          console.log(`[WebSocket] Reconnection attempt ${attemptNumber}`);
+          setBadge('Reconnecting...', '#f59e0b'); // Amber for reconnecting
+        });
+
+        socket.on('reconnect', (attemptNumber) => {
+          console.log(`[WebSocket] Reconnected after ${attemptNumber} attempts`);
+          setBadge('Connected', '#10b981'); // Green for connected
+        });
+
+        socket.on('connect_error', (error) => {
+          console.error('[WebSocket] Connection error:', error);
+          setBadge('Connection Error', '#ef4444'); // Red for error
+        });
+
+      } catch (error) {
+        console.error('[WebSocket] Failed to initialize:', error);
+        // Fallback to old polling method
+        console.log('[WebSocket] Falling back to polling');
+        startPollingFallback();
+      }
+    };
+
+    // Fallback polling method (in case WebSocket fails)
+    const startPollingFallback = () => {
       // Initial fetch
       fetchActivityData();
 
@@ -880,21 +1221,30 @@ document.addEventListener('DOMContentLoaded', () => {
       updateInterval = setInterval(fetchActivityData, 3000);
     };
 
-    // Stop polling
-    const stopPolling = () => {
+    // Cleanup function
+    const cleanup = () => {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+      }
       if (updateInterval) {
         clearInterval(updateInterval);
         updateInterval = null;
       }
+      stopPositionTimer();
     };
 
-    // Start the polling
-    startPolling();
+    // Initial data fetch to ensure immediate position update on page load
+    fetchActivityData().then(() => {
+      // After initial fetch, start WebSocket connection
+      connectWebSocket();
+    }).catch(() => {
+      // If initial fetch fails, still try WebSocket
+      connectWebSocket();
+    });
 
     // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-      stopPolling();
-    });
+    window.addEventListener('beforeunload', cleanup);
   }; // End of initActivityWidget function
 
   // Initialize activity widget

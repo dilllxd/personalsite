@@ -8,7 +8,20 @@
       "Bash(tasklist)",
       "Bash(timeout:*)",
       "WebSearch",
-      "WebFetch(domain:robins.one)"
+      "WebFetch(domain:robins.one)",
+      "Read(//c/Users/Dylan/Documents/Gitea/tidal-connection/**)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(.venvScriptsactivate)",
+      "Bash(.venvScriptspip install flask-socketio)",
+      "Bash(.venv/Scripts/pip.exe install:*)",
+      "Bash(.venv/Scripts/activate.bat)",
+      "Bash(taskkill:*)",
+      "Bash(.venvScriptsactivate.bat)",
+      "Bash(dir \"C:\\Users\\Dylan\\Documents\\Gitea\\tidal-connection\")",
+      "Bash(findstr:*)",
+      "Bash(.venvScriptspip.exe install Pillow)",
+      "Bash(\".venv/Scripts/pip.exe\" install Pillow)"
     ],
     "deny": [],
     "ask": []
